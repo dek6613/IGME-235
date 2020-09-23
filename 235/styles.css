@@ -1,0 +1,135 @@
+body
+{
+    background-color: #C3B299;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+}
+main
+{
+    width: 70vw;
+    margin: 0 auto;
+    background-color: #F6D8AE;
+    color: #08090A;
+    padding: 2em;
+}
+
+h1
+{
+    position: absolute;
+    color: #F6D8AE;
+    top: 0.2em;
+    left: 1em;
+}
+
+ul
+{
+    list-style-type: none;
+}
+
+nav
+{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    align-items: center;
+    height: 10vh;
+    margin: 0;
+    padding: 0;
+    font-size: larger;
+    font-weight: bold;
+    background-color: #7CC6FE;
+}
+nav a
+{
+    box-sizing: border-box;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    border-left: 2px solid #F6D8AE;
+    padding: 0.1em 2em;
+    text-decoration: none;
+}
+nav a img
+{
+    margin-right: 0.5em;
+}
+
+nav a:link
+{
+    color: #F6D8AE;
+}
+nav a:visited
+{
+    color: #F6D8AE;
+}
+nav a:focus
+{
+    background-color: #9AD3FE;
+    color: #F9E4C8;
+}
+nav a:hover
+{
+    background-color: #9AD3FE;
+    color: #FBEDDA;
+}
+nav a:active
+{
+    color: white;
+}
+
+a:link
+{
+    color: #9448BC;
+}
+a:visited
+{
+    color: #462159;
+}
+a:focus
+{
+    color: #A76AC8;
+}
+a:hover
+{
+    color: #BA88D3;
+}
+a:active
+{
+    color: white;
+}
+
+#top
+{
+    display: flex;
+    justify-content: center;
+}
+#top img
+{
+    border: 8px solid #974CBD;
+}
+
+.content
+{
+    width: 80%;
+    margin: 0 auto;
+}
+
+.links
+{
+    display: flex;
+    padding: 0;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+.links li
+{
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    flex-flow: column nowrap;
+    font-size: large;
+}
+.links li a
+{
+    margin: 0.5em 0;
+}
