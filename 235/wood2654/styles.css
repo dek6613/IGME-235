@@ -1,0 +1,248 @@
+body
+{
+    background-color: #35363D;
+    color: white;
+    margin: 0;
+}
+
+h1,h2,h3
+{
+    font-family: 'retro_computerregular', Arial, sans-serif;
+    font-weight: normal;
+}
+
+h1
+{
+    font-size: 50px;
+    margin: 0;
+    white-space: nowrap;
+}
+h2
+{
+    font-size: 35px;
+}
+h3
+{
+    font-size: 25px;
+    margin-top: 0;
+}
+
+@media screen and (max-width: 900px)
+{
+    h1
+    {
+        font-size: 40px;
+    }
+}
+@media screen and (max-width: 750px)
+{
+    h1
+    {
+        font-size: 25px;
+    }
+}
+
+p
+{
+    font-family: 'dogica_pixelregular', Arial, sans-serif;
+    line-height: 1.25em;
+    margin-bottom: 1em;
+}
+
+img
+{
+    max-width: 100%;
+}
+
+.wrapper
+{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+header
+{
+    background-color: #686868;
+
+    display: grid;
+    grid-template-columns: 1fr 4fr 4fr 1fr;
+    grid-template-rows: 60px;
+}
+
+header .title, header p
+{
+    margin: 0;
+    align-self: center;
+}
+
+header .title
+{
+    grid-column: 2/3;
+    display: flex;
+    align-items: center;
+}
+img.icon
+{
+    width: 50px;
+}
+
+header p
+{
+    grid-column: 3/4;
+    text-align: end;
+}
+
+main
+{
+    display: grid;
+    grid-template-columns: 1fr 4fr 4fr 1fr;
+    grid-template-rows: repeat(3, auto);
+}
+
+.largePairLeft
+{
+    background-color: #686868;
+    margin: 3rem 0.5rem 3rem 0;
+    padding: 1rem 2rem;
+    grid-column: 2/3;
+    grid-row: 1/2;
+}
+.largePairRight
+{
+    border: 10px solid white;
+    margin: 3rem 0 3rem 0.5rem;
+    padding: 1rem 2rem;
+    grid-column: 3/4;
+    grid-row: 1/2;
+
+    background-image: linear-gradient(to bottom right, #E8FDF5, #244D3E);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+img.wide
+{
+    max-width: 100%;
+    grid-column: 1/-1;
+    grid-row: 2/3;
+}
+
+.gallery
+{
+    grid-column: 2/-2;
+    grid-row: 3/4;
+
+    padding: 3rem 0;
+
+    display: grid;
+    grid-template-columns: repeat(4, 25%);
+    grid-template-rows: repeat(2, 50%);
+}
+
+@media screen and (max-width: 950px)
+{
+    main
+    {
+        grid-template-rows: repeat(4, auto);
+    }
+    .largePairLeft
+    {
+        grid-column: 2/4;
+        grid-row: 1/2;
+
+        margin: 3rem 0 0.5rem 0;
+    }
+    .largePairRight
+    {
+        grid-column: 2/4;
+        grid-row: 2/3;
+
+        margin: 0.5rem 0 3rem 0;
+    }
+    img.wide
+    {
+        grid-row: 3/4;
+    }
+    .gallery
+    {
+        grid-row: 4/5;
+    }
+}
+
+@media screen and (max-width: 1150px)
+{
+    .gallery
+    {
+        grid-template-columns: repeat(2, 50%);
+        grid-template-rows: repeat(4, 25%);
+    }
+}
+
+.galleryLeft
+{
+    border: 10px solid white;
+    margin: 0.5rem 1rem;
+    padding: 2rem 4rem;
+    background-color: #324E44;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.galleryLeft img
+{
+    width: 256px;
+    max-width: 100%;
+}
+.galleryRight
+{
+    background-color: #686868;
+    margin: 0.5rem 1rem;
+    padding: 1rem 2rem;
+}
+
+footer
+{
+    min-height: 200px;
+    max-height: fit-content;
+    display: grid;
+    grid-template-columns: 1fr 4fr 4fr 1fr;
+    grid-template-rows: 200px;
+
+    border-top: 10px solid white;
+
+    background-image: url(images/trees.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+footer pre
+{
+    font-family: 'retro_computerregular', Arial, sans-serif;
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0;
+}
+
+@media screen and (max-width: 1150px)
+{
+    footer pre 
+    {
+        font-size: 20px;
+    }
+}
+
+footer .left
+{
+    grid-column: 2/3;
+    align-self: center;
+}
+footer .right
+{
+    grid-column: 3/4;
+    text-align: end;
+    align-self: center;
+}
