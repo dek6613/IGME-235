@@ -76,6 +76,14 @@ header .title, header p
     align-self: center;
 }
 
+@media screen and (max-width: 600px)
+{
+    header p
+    {
+        display: none;
+    } 
+}
+
 header .title
 {
     grid-column: 2/3;
@@ -181,6 +189,15 @@ img.wide
     }
 }
 
+@media screen and (max-width: 600px)
+{
+    .gallery
+    {
+        font-size: smaller;
+        grid-column: 1/-1;
+    }
+}
+
 .galleryLeft
 {
     border: 10px solid white;
@@ -240,6 +257,15 @@ footer .left
     grid-column: 2/3;
     align-self: center;
 }
+
+@media screen and (max-width: 600px)
+{
+    footer .left
+    {
+        display: none;
+    }
+}
+
 footer .right
 {
     grid-column: 3/4;
