@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>DOM-3</title>
+	<style>
+		body{border:1px solid gray;}
+		p b{transform: rotate(20deg)}
+	</style>
+</head>
+<body>
+    <h1>My Page</h1>
+    <h2>Info</h2>
+    <h2>Pictures</h2>
+    <h2>More Info</h2>
+    <p>Blah <b>Blah</b> Blah</p>
+    <p>Blah <b>Blah</b> Blah</p>
+    <p id="lastParagraph">Blah <b>Blah</b> Blah</p>
+    <footer>Copyright &copy; <b>20XX</b></footer>
+    <script>
+        "use strict"; 
+        
+        document.querySelector("h1").innerHTML = "My UFO Page";
+
+        document.querySelector("h2").innerHTML = "My UFO Info";
+
+        document.querySelector("h2:nth-of-type(2)").innerHTML = "My UFO Pictures";
+
+        document.querySelector("h2:nth-of-type(3)").innerHTML = "";
+        
+        document.body.style.fontFamily = "sans-serif";
+        document.body.style.color = "#A44";
+
+        let firstPara = document.querySelector("p");
+        firstPara.innerHTML = "Report your UFO sightings here: <a href='http://www.nuforc.org'>http://www.nuforc.org</a>";
+        firstPara.style.color = "green";
+        firstPara.style.fontWeight = "bold";
+        firstPara.style.fontSize = "2em";
+        firstPara.style.textTransform = "uppercase";
+        firstPara.style.textShadow = "3px 2px #A44";
+
+        document.querySelector("p:nth-of-type(2)").innerHTML = "";
+
+        document.querySelector("p:nth-of-type(3)").innerHTML = "<img src='https://www.seti.org/sites/default/files/styles/original/public/2018-06/ufo-560px.jpg?itok=esJYv_RK' alt='Very real ufo'/>";
+        
+        document.querySelector("footer").innerHTML = "&copy; 2020 Daniel Kowalski."
+    </script>
+</body>
+</html>
