@@ -334,6 +334,8 @@ address
 address a
 {
     margin: 0 1em;
+    flex: 0 1 30%;
+    text-align: center;
 }
 address a:link
 {
