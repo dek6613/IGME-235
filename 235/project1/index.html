@@ -91,12 +91,12 @@
 
         let navbar = document.querySelector("nav");
 
-        // I want the nav bar to show up only once the client has scrolled past the landing page, which is 100vh
-        const minDistance = document.documentElement.clientHeight;
+        // I want the nav bar to show up only once the client has scrolled past the landing page, which is 100vh, but I want it to show up a bit before the landing page is offscreen, so I show it at 50vh instead.
+        const minDistance = document.documentElement.clientHeight / 2.0;
 
         function showHideNavbar()
         {
-            // If the window has scrolled vertically past 100vh, show the nav bar
+            // If the window has scrolled vertically past 50vh, show the nav bar
             if (window.pageYOffset >= minDistance)
             {
                 // The nav bar is set to "position: fixed; top: -54px;" so this transition slides down it from above the screen
