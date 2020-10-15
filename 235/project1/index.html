@@ -90,7 +90,6 @@
         "use strict";
 
         let navbar = document.querySelector("nav");
-        let navList = document.querySelector("nav ul");
 
         // I want the nav bar to show up only once the client has scrolled past the landing page, which is 100vh
         const minDistance = document.documentElement.clientHeight;
@@ -107,7 +106,7 @@
             else
             {
                 // This slides the nav bar back up to above the screen
-                navbar.style.top = "-" + navList.offsetHeight + "px";
+                navbar.style.top = "-" + navbar.offsetHeight + "px";
                 navbar.style.transition = "top 0.25s";
             }
         }
