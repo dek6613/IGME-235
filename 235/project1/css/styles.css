@@ -42,9 +42,10 @@ header
     justify-content: center;
     align-items: center;
 
-    /* Gradient of green to blue from top to bottom. Mirrored in the footer */
+    /* Gradient of blank to the main background color overlayed on an image */
     background-image: linear-gradient(to top, rgba(0, 31, 41, 1), rgba(255, 255, 255, 0)), url("../media/background.jpg");
-    background-size: 100vw;
+    background-position: center;
+    background-size: cover;
 }
 
 header h1
