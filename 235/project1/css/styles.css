@@ -335,15 +335,22 @@ footer
 {
     /* Mirrors the gradient from the header */
     background-image: linear-gradient(to bottom, #001F29, #31493C);
-    height: 150px;
+    height: fit-content;
 
     /* Padding here is to make the contact info appear lower in the header */
     padding-top: 50px;
 }
 
+footer h2
+{
+    margin: 0 auto 1em;
+    text-align: center;
+}
+
 address
 {
     height: 100%;
+    padding: 0 0 2em;
 
     /* Centers the links horizontally */
     display: flex;
@@ -361,6 +368,9 @@ address a
     /* Spaces the links evenly and centered when they can fit, but shrinks the space around each as necessary on smaller screens */
     flex: 0 1 30%;
     text-align: center;
+    background-color: #31493C;
+    padding: 2em 1em;
+    margin: 0.5em 0;
 }
 address a:link
 {
@@ -376,7 +386,8 @@ address a:focus
 }
 address a:hover
 {
-    color: #CCF5CC;
+    color: white;
+    background-color: #7A9E7E;
 }
 address a:active
 {
