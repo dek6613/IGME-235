@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Web Apps-4-HW</title>
+	<style>
+		body{border:1px solid gray;}
+	</style>
+</head>
+<body>
+<h1>My Favorites</h1>
+<h2>My Favorite Colors</h2>
+
+<ol id="colorsList">
+	
+</ol>
+
+<h2>My Favorite Games</h2>
+
+<ol id="gamesList">
+	
+</ol>
+
+<h2>My Favorite Links</h2>
+
+<ol id="linksList">
+	
+</ol>
+
+<script>
+    "use strict";
+    let colors = ["green","purple","blue","pink","yellow"];
+    let games = ["Hollow Knight", "League of Legends", "Civ 5", "Minecraft"];
+
+    let createList = (listElement, array) =>
+    {
+        for (let i = 0; i < array.length; i++)
+        {
+            let newLi = document.createElement("li");
+            let newLiText = document.createTextNode(array[i]);
+
+            newLi.appendChild(newLiText);
+
+            listElement.appendChild(newLi);
+        }
+    }
+
+    createList(document.querySelector("#colorsList"), colors);
+    createList(document.querySelector("#gamesList"), games);
+
+    // Optional - can you figure out how to pull both the key AND the value
+    // from the `links` object literal?
+    let links = {
+		"YouTube": "https://www.youtube.com",
+		"Discord" : "https://discord.gg",
+		"Roll20" : "https://roll20.net/"
+	}
+
+    for (let property in links)
+    {
+        let newLinkLI = document.createElement("li");
+
+        let newLinkA = document.createElement("a");
+        newLinkA.setAttribute("href", links[property]);
+
+        let newLinkText = document.createTextNode(property);
+        
+        newLinkA.appendChild(newLinkText);
+        newLinkLI.appendChild(newLinkA);
+
+        document.querySelector("#linksList").appendChild(newLinkLI);
+    }
+</script>
+</body>
+</html>
