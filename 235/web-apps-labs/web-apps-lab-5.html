@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Web Apps-6</title>
+	<style>
+		body{
+			font-family:sans-serif;
+		}
+		#colorform{
+			background-color:#dfecdf;
+			color: #111;
+			padding:1em;width:400px;
+		}
+		#colorform p#info{
+			background-color:white;
+			color: black;
+			width:300px;
+			height:100px;
+			padding:.5em;
+		}
+		
+		#colorform legend{ 
+			font-weight:bold;
+			font-size:1.2em;
+		}
+	</style>
+</head>
+<body>
+
+<div id="colorform">
+	<legend>Choose your favorite color!</legend>
+	<p><input type="radio" name="colorGroup" id="colorGroupRed" value="red" /> Red</p>
+	<p><input type="radio" name="colorGroup" id="colorGroupGreen" value="green" /> Green</p>
+	<p><input type="radio" name="colorGroup" id="colorGroupBlue" value="blue" /> Blue</p>
+	<p><button id="colorButton" type="button">Submit</button></p>
+	<p id="info"></p>
+</div>
+
+<script>
+    "use strict";
+
+    let radioSelect = function(e)
+    {
+        // Gets the radio button's value (which is a name of a color)
+        let color = e.target.value;
+
+        // Changes the info paragraph's text based on the color selected
+        document.querySelector("#info").innerHTML = "You have selected \"" + color + "!\"";
+    }
+
+    // Adds the radioSelect function to each radio button's onchange event
+    for (let input of document.querySelectorAll("input"))
+    {
+        input.onchange = radioSelect;
+    }
+
+    let submitColor = function(e)
+    {
+        // By default, color is undefined
+        let color;
+
+        // Loop through all the radio buttons
+        for (let input of document.querySelectorAll("input"))
+        {
+            // if the button is selected, assign the color value appropriately and exit the loop
+            if (input.checked)
+            {
+                color = input.value;
+                break;
+            }
+        }
+
+        // If the color is undefined, that means a button hasn't been selected yet, so exit the function early
+        if (!color)
+        {
+            return;
+        }
+
+        // Update the info text and legend color based on the user's selection
+        document.querySelector("#info").innerHTML = "Your FINAL CHOICE is \"" + color + "!\""; // The choice isn't exactly "final" given how the user can still select another option but that's fine
+        document.querySelector("legend").style.color = color;
+    }
+
+    // Add the submitColor function the the button's onclick event
+    document.querySelector("#colorButton").onclick = submitColor;
+</script>
+</body>
+</html>
