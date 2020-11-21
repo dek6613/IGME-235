@@ -270,6 +270,21 @@ function dataLoaded(e)
 
     result += typeString;
 
+    // Some pokemon have no listed abilities (usually due to incomplete API info from gen 8), so this "if" statement works around that
+    let ability = {};
+    if (obj.abilities.length > 0)
+    {
+        // Randomly picks an ability from the pokemon's list
+        ability = obj.abilities[Math.floor(Math.random() * obj.abilities.length)].ability;
+    }
+    else
+    {
+        ability.name = "none";
+    }
+
+    // Displays the chosen ability
+    result += "<p class='ability'>Ability: <strong>" + formatText(ability.name) + "</strong></p>";
+
     let movesHTML = "";
 
     // Gets all the pokemon's knowable moves
@@ -294,21 +309,6 @@ function dataLoaded(e)
 
     // Wraps up the move list in HTML
     result += movesHTML;
-
-    // Some pokemon have no listed abilities (usually due to incomplete API info from gen 8), so this "if" statement works around that
-    let ability = {};
-    if (obj.abilities.length > 0)
-    {
-        // Randomly picks an ability from the pokemon's list
-        ability = obj.abilities[Math.floor(Math.random() * obj.abilities.length)].ability;
-    }
-    else
-    {
-        ability.name = "none";
-    }
-
-    // Displays the chosen ability
-    result += "<p class='ability'>Ability: <strong>" + formatText(ability.name) + "</strong></p>";
 
     // Pushes the new HTML to the page
     document.querySelector("#result").innerHTML = result;
