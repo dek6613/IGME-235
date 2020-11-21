@@ -41,7 +41,7 @@ function generateButtonClicked()
     // Updates the display term if the user didn't enter a name themselves
     if (displayTerm.trim().length < 1)
     {
-        displayTerm = "a random pokemon";
+        displayTerm = "a random pokémon";
     }
     
     document.querySelector("#status").innerHTML = "Searching for " + displayTerm + "...";
