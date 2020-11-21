@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Documentation</title>
+</head>
+<body>
+    <header>
+    <h1>Daniel Kowalski Project 2 Documentation</h1>
+    </header>
+    <main style="display: block">
+    <h2>Sources:</h2>
+    <ul>
+        <li><a href="https://fonts.google.com/specimen/Trispace?category=Sans+Serif&sidebar.open=true&selection.family=Trispace">Typeface</a></li>
+        <li><a href="https://pokeapi.co/">PokéAPI</a></li>
+        <li>Pokémon sprite images are from the PokéAPI database as well</li>
+        <li><a href="https://coolors.co/577590-fae9b2-364481-97dffc-161925">Color scheme</a></li>
+        <li><a href="https://bulbapedia.bulbagarden.net/wiki/Type">Pokémon Type Colors</a></li>
+    </ul>
+    <h2>Design Process</h2>
+    <p>
+        Honestly, this whole thing wouldn't be possible were it not for the interactive "Try it now!" section of the PokéAPI site. Didn't need much of a tutorial thanks to being able to do my own trial and error through seeing what various GET urls would return from the API. That said, W3C school is as helpful as ever, and I referenced the web apps labs and gif finder exercise frequently.
+    </p>
+    <p>
+        That said, I came up with the idea as a competitive but not too serious pokémon player. In the past, my friends and I have done randomized team drafts, but all those would do is give us random pokémon to battle with. I wanted to take it a step further and randomize the movesets and abilities as well. Even when testing out early versions of my code, I was having fun sharing screenshots of absurd mash-ups of moves and pokémon with my friends over discord. In that way, I'd say this project was a success.
+    </p>
+    <p>
+        The main feature I'm proud of is getting the various types of search restrictions to work together nicely (for the most part). There are some bugs that can lead to a pokémon outside of the given criteria showing up, but as far as I can tell there's no clean way to fix this without potentially adding many more GET requests, so I decided to prioritize speed over accuracy since this works most of the time anyway. The other feature I like is that I let the user search by the species name, since the API has lots of stuff like "minior-red-meteor." My code will always return a species' default form/appearance. This happens to be where one of the aformentioned bugs comes from, but the quality of life it provides is not something I'm willing to sacrifice (after all, who wants to have to search for that hyphenated mess when they know they just want a moveset for Minior?).
+    </p>
+    </main>
+</body>
+</html>
