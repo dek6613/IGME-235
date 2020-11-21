@@ -1,8 +1,37 @@
 "use strict";
 
+const prefix = "dek6613-poke-";
+const nameKey = prefix + "name";
+const typeKey = prefix + "type";
+const evoKey = prefix + "evolved-only";
+const resultKey = prefix + "result";
+
+const storedName = localStorage.getItem(nameKey);
+const storedType = localStorage.getItem(typeKey);
+const storedEvo = localStorage.getItem(evoKey) == "true";
+const storedResult = localStorage.getItem(resultKey);
+
 window.onload = function(e)
 {
     document.querySelector("#generate").onclick = generateButtonClicked
+
+    if (storedName)
+    {
+        document.querySelector("#namesearch").value = storedName;
+    }
+    if (storedType)
+    {
+        document.querySelector(`option[value='${storedType}']`).selected = true;
+    }
+    document.querySelector("#fullEvoCheck").checked = storedEvo;
+    if (storedResult)
+    {
+        document.querySelector("#result").innerHTML = storedResult;
+    }
+
+    document.querySelector("#namesearch").onchange = e => { localStorage.setItem(nameKey, e.target.value); };
+    document.querySelector("#type").onchange = e => { localStorage.setItem(typeKey, e.target.value); };
+    document.querySelector("#fullEvoCheck").onchange = e => { localStorage.setItem(evoKey, e.target.checked); };
 };
 
 // The total number of pokemon as of updating this site (11/13/2020)
@@ -313,6 +342,8 @@ function dataLoaded(e)
     // Pushes the new HTML to the page
     document.querySelector("#result").innerHTML = result;
     document.querySelector("#status").innerHTML = "Move list generated for " + displayTerm + "!";
+
+    localStorage.setItem(resultKey, result);
 }
 
 function dataError(e)
