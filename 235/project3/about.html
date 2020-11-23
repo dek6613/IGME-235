@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<link href='https://fonts.googleapis.com/css?family=Allerta+Stencil' rel='stylesheet' type='text/css'>
+	<title>Project 1 Proposal</title>
+	<style type="text/css">
+	body{
+		margin-left:5%;
+		margin-right:5%;
+		background-color:#00008B;
+		font-family: verdana;
+	}
+	
+	#content{
+		background-color:white;
+		padding: 0 1em .5em 1em;
+	}
+	h1,h2,h3{
+		font-family: 'Allerta Stencil', sans-serif;
+		margin-bottom:0;
+		padding-bottom:0;
+	}
+	
+	h3{
+		color: #555;
+	}
+	
+	h2 + p, h3 + p{
+		margin-top:0.25em;
+	}
+	
+	li{
+		margin-bottom: 1em;
+	}
+	
+	section{
+		border-bottom: solid 1px gray;
+	}
+	</style>
+</head>
+<body>
+	<div id="content">
+		<div id="review">
+			<h1><em>Graviturgy</em></h1>
+			
+			<section>
+				<h2>I. High Concept</h2>
+				<p>It's a platformer where you can use the force!</p>
+			</section>
+			
+			<section>
+				<h2>II. Genre</h2>
+				<p>Puzzle platformer</p>
+			</section>
+			
+			<section>
+				<h2>III. Platform</h2>
+				<p>Desktop (requires keyboard and mouse)</p>
+			</section>
+			
+			<section>
+				<h2>IV. Story</h2>
+				<p>You're escaping a science facility conducting experiments with gravity. As you're leaving you pick up a pair of Gravity Gloves and use them to break out. The story is essentially a set up for why the player is going through all of these puzzles. The mood is rather calm since the player isn't under any rush, nor should they be under stress when trying to think through this problem solving.</p>
+			</section>
+			
+			<section>
+				<h2>V. Esthetics</h2>
+				<p>Graphics style - cartoonish, possibly stick figures if I'm pressed for time.</p>
+				<p>Sound - 8-bit and ambient, though the ambience would be rather quiet (faint buzzing of electricity or distant walking sounds). Most sounds would be used for player actions (walking, grabbing an object, etc). If I have time to add dialogue for the lab's pre-recorded security messages, those would be included as well for when the player enters a new room or the like.</p>
+			</section>
+			
+			<section>
+				<h2>VI. Gameplay</h2>
+				<h3>Mechanics</h3>
+				<p>The core gameplay revolves around the player's ability to move, jump, manipulate objects (mostly crates). When the player clicks and holds on a movable object within a certain distance from them, the object follows the player's mouse (but still adheres to collision). While holding onto an object, the player is unable to walk or move outside of grabbing range. Also, the gravity gloves have a battery limit that goes down when an object is moved. When out of charge, the player becomes unable to grab any objects and drops any they were currently holding. Batteries are recharged upon entering a new room or when picking up a battery power-up. Lastly, there will be zones or gates where objects cannot be moved through and/or where the gravity gloves cannot be used.</p>
+				
+				<h3>Control</h3>
+				<p>Keyboard & Mouse (keyboard to move, mouse to grab)</p>
+				
+				<h3>Teaching the game/New user experience aka "Onboarding"</h3>
+                <p>The very first room the player starts in will have indicators in the background (but clear enough to notice easily) that show the WASD keys, prompting the player to use those to move. Once they move to the right of their holding cell, there will be a wall that's too high to jump up, and a box in front of it. In the background will be another prompt directly above the box that shows the left mouse button pressed, prompting the player to click on the box. Additionally, movable objects will havea special outline to draw the player's attention to them, and when the cursor is over a movable object the object and cursor will change appearance slightly.</p>
+			
+				<h3>Player learning</h3>
+                <p>As a puzzle game, the depth comes from figuring out how to use the Gravity Gloves to make a path to the exit of each room. Some combos include flinging objects to throw them further without using excess battery charge, swinging off of objects that are fixed to the ceiling, and moving objects underneath the player.</p>
+			</section>
+			
+			
+			<section>
+				<h2>VII. Screenshots</h2>
+                <img src="images/sketch1.png" alt="" wdith=100%/>
+                <img src="images/sketch2.png" alt="" width=100%/>
+			</section>
+			
+			<section>
+				<h2>VIII. Other</h2>
+				<p>This will use PIXIjs to render images. The game takes inspiration from momentum-based puzzle games such as Portal and physics sandboxes such as GMod (in particular, the physics gun).</p>
+			</section>
+			
+			<section>
+				<h2>IX. About the developer</h2>
+                <p>Your name/major/minor/year your, skill set and interests (ex. programming, game physics, graphic design, Maya, Photoshop, Illustrator, music, game sound, ...).</p>
+                <p>I'm Daniel Kowalski, a 2nd year Game Design & Development major at RIT. I'm skilled in general programming, game design, graphic design, and photoshop. Generally I like to use object oriented languages such as C# and full game engines, particularly Unity. I'm a huge fan of strategy, platformer, puzzle, and tabletop games.</p>
+			</section>
+		</div>
+	</div>
+</body>
+</html>
