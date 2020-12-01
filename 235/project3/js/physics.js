@@ -92,8 +92,8 @@ class Rectangle
     // Returns the overlapping area of two rectangles
     overlap (other = new Rectangle())
     {
-        let olWidth = Math.max(this.position.x, other.position.x) - Math.min(this.position.x + this.width, other.position.x + other.width);
-        let olHeight = Math.min(this.position.y, other.position.y) - Math.max(this.position.y - this.height, other.position.y - other.height);
+        let olWidth = Math.min(this.position.x + this.width, other.position.x + other.width) - Math.max(this.position.x, other.position.x);
+        let olHeight = Math.min(this.position.y + this.height, other.position.y + other.height) - Math.max(this.position.y, other.position.y);
 
         if (olWidth <= 0 || olHeight <= 0) { return new Rectangle(); }
 
@@ -101,6 +101,11 @@ class Rectangle
         let olY = Math.min(this.position.y, other.position.y);
 
         return new Rectangle(new Vector(olX, olY), olWidth, olHeight);
+    }
+
+    center ()
+    {
+        return this.position.add(new Vector(this.width / 2, this.height / 2));
     }
 
     // Creates a copy of this rectangle
@@ -134,6 +139,7 @@ class Kinematic
         this.velocity = this.velocity.add(this.acceleration.scale(dt));
         //this.velocity = this.velocity.clampMagnitude(this.maxSpeed);
         this.position = this.position.add(this.velocity.scale(dt));
+        this.collision.position = this.position;
     }
 
     resetAcceleration()

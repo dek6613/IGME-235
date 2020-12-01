@@ -9,10 +9,14 @@ document.body.appendChild(app.view);
 const sceneWidth = app.view.width;
 const sceneHeight = app.view.height;
 
+const playerPrefab = { width: 25, height: 25, mass: 1, maxSpeed: 1, color: 0x00FFBF };
+const cratePrefab = { width: 40, height: 40, mass: 0.5, maxSpeed: 500, color: 0xBFBFBF };
+
 let paused = true;
 
 let stage;
 
+let player;
 let testLevelScene, crate;
 
 setup();
@@ -24,12 +28,19 @@ function setup()
     testLevelScene = new PIXI.Container();
     stage.addChild(testLevelScene);
 
-    crate = new Crate(new Vector(245, 20), 20, 20, 0.5, 500);
+    // Create crate
+    crate = new Crate(new Vector(245, 20), cratePrefab.width, cratePrefab.height, cratePrefab.mass, cratePrefab.maxSpeed, cratePrefab.color);
     crate.interactive = true;
     crate.buttonMode = true;
     crate.on("mousedown", e => crate.grabbed = true);
     app.view.onmouseup = e => crate.grabbed = false;
     testLevelScene.addChild(crate);
+
+    // Create player
+    player = new Player(new Vector(100, 10), playerPrefab.width, playerPrefab.height, playerPrefab.mass, playerPrefab.maxSpeed, playerPrefab.color);
+    document.addEventListener("keydown", playerInputStart, true);
+    document.addEventListener("keyup", playerInputEnd, true);
+    testLevelScene.addChild(player);
 
     app.ticker.add(gameLoop);
 
@@ -45,6 +56,50 @@ function gameLoop()
 
     let mousePosition = app.renderer.plugins.interaction.mouse.global;
 
+    player.update(dt);
+    player.draw();
+
     crate.update(dt, mousePosition);
     crate.draw();
+}
+
+function playerInputStart(e)
+{
+    console.log("keypress!");
+    switch (e.code)
+    {
+        case "KeyA":
+        case "ArrowLeft":
+            player.isMoveLeft = true;
+            break;
+        case "KeyD":
+        case "ArrowRight":
+            player.isMoveRight = true;
+            break;
+        case "KeyW":
+        case "ArrowUp":
+        case "Space":
+            player.isJump = true;
+            break;
+    }
+}
+
+function playerInputEnd(e)
+{
+    switch (e.code)
+    {
+        case "KeyA":
+        case "ArrowLeft":
+            player.isMoveLeft = false;
+            break;
+        case "KeyD":
+        case "ArrowRight":
+            player.isMoveRight = false;
+            break;
+        case "KeyW":
+        case "ArrowUp":
+        case "Space":
+            player.isJump = false;
+            break;
+    }
 }
