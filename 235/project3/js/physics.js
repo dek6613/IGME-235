@@ -228,4 +228,10 @@ class Kinematic
             }
         }
     }
+
+    stop()
+    {
+        this.velocity = new Vector();
+        this.acceleration = new Vector();
+    }
 }

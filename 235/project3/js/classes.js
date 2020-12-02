@@ -398,7 +398,7 @@ class ClickRadius extends PIXI.Graphics
         this.y = this.vectPos.y;
 
         this.radius = radius;
-        this.alpha = 0.25;
+        this.alpha = 0.15;
     }
 
     update ()
@@ -434,6 +434,23 @@ class PlayerGate extends PIXI.Graphics
         this.width = width;
         this.height = height;
         this.alpha = 0.25;
+
+        this.collision = new Rectangle(position, width, height);
+    }
+}
+
+class Wall extends PIXI.Graphics
+{
+    constructor(position, width, height, color = 0xFFFFFF)
+    {
+        super();
+        this.beginFill(color);
+        this.drawRect(0, 0, width, height);
+        this.endFill();
+        this.x = position.x;
+        this.y = position.y;
+        this.width = width;
+        this.height = height;
 
         this.collision = new Rectangle(position, width, height);
     }
