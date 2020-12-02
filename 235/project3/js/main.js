@@ -29,7 +29,7 @@ function setup()
     stage.addChild(testLevelScene);
 
     // Create crate
-    crate = new Crate(new Vector(245, 20), cratePrefab.width, cratePrefab.height, cratePrefab.mass, cratePrefab.maxSpeed, cratePrefab.color);
+    crate = new Crate(new Vector(245, 30), cratePrefab.width, cratePrefab.height, cratePrefab.mass, cratePrefab.maxSpeed, cratePrefab.color);
     crate.interactive = true;
     crate.buttonMode = true;
     crate.on("mousedown", e => crate.grabbed = true);
@@ -37,7 +37,7 @@ function setup()
     testLevelScene.addChild(crate);
 
     // Create player
-    player = new Player(new Vector(100, 10), playerPrefab.width, playerPrefab.height, playerPrefab.mass, playerPrefab.maxSpeed, playerPrefab.color);
+    player = new Player(new Vector(245, 0), playerPrefab.width, playerPrefab.height, playerPrefab.mass, playerPrefab.maxSpeed, playerPrefab.color);
     document.addEventListener("keydown", playerInputStart, true);
     document.addEventListener("keyup", playerInputEnd, true);
     testLevelScene.addChild(player);
@@ -56,16 +56,15 @@ function gameLoop()
 
     let mousePosition = app.renderer.plugins.interaction.mouse.global;
 
-    player.update(dt);
-    player.draw();
-
     crate.update(dt, mousePosition);
+    player.update(dt, [], [crate]);
+
     crate.draw();
+    player.draw();
 }
 
 function playerInputStart(e)
 {
-    console.log("keypress!");
     switch (e.code)
     {
         case "KeyA":

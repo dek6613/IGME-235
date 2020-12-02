@@ -10,6 +10,8 @@ class Crate extends PIXI.Graphics
         this.endFill();
         this.x = position.x;
         this.y = position.y;
+        this.width = width;
+        this.height = height;
 
         this.kinematic = new Kinematic(position, width, height, mass, maxSpeed);
 
@@ -29,7 +31,7 @@ class Crate extends PIXI.Graphics
             this.kinematic.applyGravity();
         }
 
-        this.floorCheck = new Rectangle(new Vector(this.x, this.y + this.height), this.width, 1);
+        this.floorCheck = new Rectangle(new Vector(this.kinematic.position.x, this.kinematic.position.y + this.height), this.width, 1);
 
         // If this is on the floor, apply friction
         if (this.floorCheck.intersects(FLOOR))
@@ -105,6 +107,8 @@ class Player extends PIXI.Graphics
         this.endFill();
         this.x = position.x;
         this.y = position.y;
+        this.width = width;
+        this.height = height;
 
         this.kinematic = new Kinematic(position, width, height, mass, maxSpeed);
 
@@ -113,12 +117,14 @@ class Player extends PIXI.Graphics
         this.isJump = false;
         this.grounded = false;
 
+        this.riding = null;
+
         this.floorCheck = new Rectangle(new Vector(this.x, this.y + this.height), this.width, 1);
 
         Object.seal(this);
     }
 
-    update(dt = 1/60, solids = [])
+    update(dt = 1/60, solids = [], mobiles = [])
     {
         // Apply forces
         this.kinematic.applyGravity()
@@ -149,7 +155,7 @@ class Player extends PIXI.Graphics
         }
 
         // Move
-        this.kinematic.move(dt);
+        this.move(dt);
 
         // Detect collisions
         solids.push(FLOOR);
@@ -157,8 +163,18 @@ class Player extends PIXI.Graphics
         solids.push(LEFT_WALL);
         solids.push(RIGHT_WALL);
 
-        this.floorCheck = new Rectangle(new Vector(this.x, this.y + this.height), this.width, 1);
+        for (let i = 0; i < solids.length; i++)
+        {
+            this.collideSolid(solids[i]);
+        }
+        for (let i = 0; i < mobiles.length; i++)
+        {
+            this.collideSolid(mobiles[i].kinematic.collision);
+        }
+
+        this.floorCheck = new Rectangle(new Vector(this.kinematic.position.x, this.kinematic.position.y + this.height), this.width, 1);
         this.grounded = false;
+        this.riding = null;
 
         for (let i = 0; i < solids.length; i++)
         {
@@ -166,8 +182,14 @@ class Player extends PIXI.Graphics
             {
                 this.grounded = true;
             }
-
-            this.collideSolid(solids[i]);
+        }
+        for (let i = 0; i < mobiles.length; i++)
+        {
+            if (this.floorCheck.intersects(mobiles[i].kinematic.collision))
+            {
+                this.grounded = true;
+                this.riding = mobiles[i];
+            }
         }
         
         // Clean up velocities
@@ -206,14 +228,12 @@ class Player extends PIXI.Graphics
             if (this.kinematic.collision.center().x < other.center().x)
             {
                 this.kinematic.position.x -= overlap.width;
-                console.log("L - " + overlap.width);
             }
 
             // Player is to the right
             else
             {
                 this.kinematic.position.x += overlap.width;
-                console.log("R - " + overlap.width);
             }
         }
 
@@ -226,14 +246,12 @@ class Player extends PIXI.Graphics
             if (this.kinematic.collision.center().y < other.center().y)
             {
                 this.kinematic.position.y -= overlap.height;
-                console.log("U - " + overlap.height);
             }
 
             // Player is below
             else
             {
                 this.kinematic.position.y += overlap.height;
-                console.log("D - " + overlap.height);
             }
         }
     }
@@ -242,7 +260,9 @@ class Player extends PIXI.Graphics
     {
         if (this.grounded)
         {
-            this.kinematic.applyForce(new Vector(0, -10000));
+            this.kinematic.applyForce(new Vector(0, -20000));
+            //this.kinematic.velocity.y = -300;
+            console.log("JUMP!");
         }
     }
 
@@ -256,5 +276,17 @@ class Player extends PIXI.Graphics
     {
         //this.kinematic.applyForce(new Vector(300, 0));
         this.kinematic.velocity.x = 150;
+    }
+
+    move(dt = 1/60)
+    {
+        this.kinematic.velocity = this.kinematic.velocity.add(this.kinematic.acceleration.scale(dt));
+        if (this.riding)
+        {
+            this.kinematic.velocity = this.kinematic.velocity.add(this.riding.kinematic.velocity);
+        }
+        //this.kinematic.velocity = this.kinematic.velocity.clampMagnitude(this.kinematic.maxSpeed);
+        this.kinematic.position = this.kinematic.position.add(this.kinematic.velocity.scale(dt));
+        this.kinematic.collision.position = this.kinematic.position;
     }
 }
