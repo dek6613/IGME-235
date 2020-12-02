@@ -199,9 +199,9 @@ class Player extends PIXI.Graphics
         this.kinematic.applyGravity()
 
         // Apply grounded friction if the player isn't inputting movement
-        if (this.grounded && !(this.isMoveLeft || this.isMoveRight || this.isJump))
+        if (this.grounded && !(this.isMoveLeft || this.isMoveRight))
         {
-            this.kinematic.applyForce(new Vector(this.kinematic.velocity.x * -100, 0));
+            this.kinematic.velocity.x = 0;
         }
 
         // Apply air friction if in the air
@@ -372,10 +372,10 @@ class Player extends PIXI.Graphics
     move(dt = 1/60)
     {
         this.kinematic.velocity = this.kinematic.velocity.add(this.kinematic.acceleration.scale(dt));
-        if (this.riding)
-        {
-            this.kinematic.velocity = this.kinematic.velocity.add(this.riding.kinematic.velocity);
-        }
+        //if (this.riding)
+        //{
+        //    this.kinematic.velocity = this.kinematic.velocity.add(this.riding.kinematic.velocity);
+        //}
         //this.kinematic.velocity = this.kinematic.velocity.clampMagnitude(this.kinematic.maxSpeed);
         this.kinematic.position = this.kinematic.position.add(this.kinematic.velocity.scale(dt));
         this.kinematic.collision.position = this.kinematic.position;
