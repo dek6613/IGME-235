@@ -17,7 +17,7 @@ let paused = true;
 let stage;
 
 let player;
-let testLevelScene, crate;
+let testLevelScene, crate, crate2;
 
 setup();
 
@@ -33,8 +33,15 @@ function setup()
     crate.interactive = true;
     crate.buttonMode = true;
     crate.on("mousedown", e => crate.grabbed = true);
-    app.view.onmouseup = e => crate.grabbed = false;
+    app.view.addEventListener("mouseup", e => crate.grabbed = false);
     testLevelScene.addChild(crate);
+
+    crate2 = new Crate(new Vector(445, 30), cratePrefab.width, cratePrefab.height, cratePrefab.mass, cratePrefab.maxSpeed, cratePrefab.color);
+    crate2.interactive = true;
+    crate2.buttonMode = true;
+    crate2.on("mousedown", e => crate2.grabbed = true);
+    app.view.addEventListener("mouseup", e => crate2.grabbed = false);
+    testLevelScene.addChild(crate2);
 
     // Create player
     player = new Player(new Vector(245, 0), playerPrefab.width, playerPrefab.height, playerPrefab.mass, playerPrefab.maxSpeed, playerPrefab.color);
@@ -56,10 +63,24 @@ function gameLoop()
 
     let mousePosition = app.renderer.plugins.interaction.mouse.global;
 
-    crate.update(dt, mousePosition);
-    player.update(dt, [], [crate]);
+    let mobiles = [];
+    
+    if (!crate.grabbed)
+    {
+        mobiles.push(crate);
+    }
+    if (!crate2.grabbed)
+    {
+        mobiles.push(crate2);
+    }
+    mobiles.push(player);
+
+    crate.update(dt, [], mobiles, mousePosition);
+    crate2.update(dt, [], mobiles, mousePosition);
+    player.update(dt, [], mobiles);
 
     crate.draw();
+    crate2.draw();
     player.draw();
 }
 

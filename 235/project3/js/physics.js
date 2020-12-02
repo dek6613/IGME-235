@@ -184,4 +184,48 @@ class Kinematic
 
         return desiredVel.subtract(this.velocity);
     }
+
+    // Checks if the kinematic is colliding with a rectangle and moves them out of the way accordingly. Returns the direction the kinematic was pushed
+    pushOut(other = new Rectangle())
+    {
+        if (!this.collision.intersects(other)) { return; }
+
+        let overlap = this.collision.overlap(other);
+
+        // Side collision
+        if (overlap.width < overlap.height)
+        {
+            // Kinematic is to the left
+            if (this.collision.center().x < other.center().x)
+            {
+                this.position.x -= overlap.width;
+                return "-x";
+            }
+
+            // Kinematic is to the right
+            else
+            {
+                this.position.x += overlap.width;
+                return "+x";
+            }
+        }
+
+        // Top/bottom collision
+        else
+        {
+            // Kinematic is above
+            if (this.collision.center().y < other.center().y)
+            {
+                this.position.y -= overlap.height;
+                return "-y";
+            }
+
+            // Kinematic is below
+            else
+            {
+                this.position.y += overlap.height;
+                return "+y";
+            }
+        }
+    }
 }

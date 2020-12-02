@@ -1,4 +1,7 @@
 const FLOOR = new Rectangle(new Vector(0, 600), 1000, 200);
+const LEFT_WALL = new Rectangle(new Vector(-200, 0), 200, 600);
+const RIGHT_WALL = new Rectangle(new Vector(1000, 0), 200, 600);
+const CEILING = new Rectangle(new Vector(0, -200), 1000, 200);
 
 class Crate extends PIXI.Graphics
 {
@@ -16,10 +19,13 @@ class Crate extends PIXI.Graphics
         this.kinematic = new Kinematic(position, width, height, mass, maxSpeed);
 
         this.grabbed = false;
+        this.grounded = false;
+        this.riding = null;
+
         this.floorCheck = new Rectangle(new Vector(this.x, this.y + this.height), this.width, 1);
     }
 
-    update(dt = 1/60, mousePosition)
+    update(dt = 1/60, solids = [], mobiles = [], mousePosition)
     {
         if (this.grabbed)
         {
@@ -34,15 +40,81 @@ class Crate extends PIXI.Graphics
         this.floorCheck = new Rectangle(new Vector(this.kinematic.position.x, this.kinematic.position.y + this.height), this.width, 1);
 
         // If this is on the floor, apply friction
-        if (this.floorCheck.intersects(FLOOR))
+        if (this.grounded)
         {
             this.kinematic.applyFriction(2);
         }
 
         this.kinematic.move(dt);
 
-        this.bounceEdges();
+        //this.bounceEdges();
 
+        // Detect collisions
+        solids.push(FLOOR);
+        solids.push(CEILING);
+        solids.push(LEFT_WALL);
+        solids.push(RIGHT_WALL);
+
+        for (let i = 0; i < solids.length; i++)
+        {
+            let pushDirection = this.kinematic.pushOut(solids[i]);
+
+            if (pushDirection == "-x" || pushDirection == "+x")
+            {
+                this.kinematic.velocity.x *= -0.5;
+            }
+            else if (pushDirection == "-y" || pushDirection == "+y")
+            {
+                this.kinematic.velocity.y *= -0.5;
+            }
+        }
+
+        if (!this.grabbed)
+        {
+            for (let i = 0; i < mobiles.length; i++)
+            {
+                if (mobiles[i] == this) { continue; }
+
+                let pushDirection = this.kinematic.pushOut(mobiles[i].kinematic.collision);
+
+                if (pushDirection == "-x" || pushDirection == "+x")
+                {
+                    this.kinematic.velocity.x *= -0.5;
+                }
+                else if (pushDirection == "-y" || pushDirection == "+y")
+                {
+                    this.kinematic.velocity.y *= -0.5;
+                }
+            }
+        }
+
+        this.floorCheck = new Rectangle(new Vector(this.kinematic.position.x, this.kinematic.position.y + this.height), this.width, 1);
+        this.grounded = false;
+        this.riding = null;
+
+        for (let i = 0; i < solids.length; i++)
+        {
+            if (this.floorCheck.intersects(solids[i]))
+            {
+                this.grounded = true;
+            }
+        }
+
+        if (!this.grabbed)
+        {
+            for (let i = 0; i < mobiles.length; i++)
+            {
+                if (mobiles[i] == this) { continue; }
+
+                if (this.floorCheck.intersects(mobiles[i].kinematic.collision))
+                {
+                    this.grounded = true;
+                    this.riding = mobiles[i];
+                }
+            }
+        }
+
+        // Clean up velocities
         if (Math.abs(this.kinematic.velocity.x) < 1)
         {
             this.kinematic.velocity.x = 0;
@@ -52,6 +124,7 @@ class Crate extends PIXI.Graphics
             this.kinematic.velocity.y = 0;
         }
 
+        // Reset acceleration for next frame
         this.kinematic.resetAcceleration();
     }
 
@@ -92,10 +165,6 @@ class Crate extends PIXI.Graphics
         }
     }
 }
-
-const LEFT_WALL = new Rectangle(new Vector(-200, 0), 200, 600);
-const RIGHT_WALL = new Rectangle(new Vector(1000, 0), 200, 600);
-const CEILING = new Rectangle(new Vector(0, -200), 1000, 200);
 
 class Player extends PIXI.Graphics
 {
@@ -165,11 +234,31 @@ class Player extends PIXI.Graphics
 
         for (let i = 0; i < solids.length; i++)
         {
-            this.collideSolid(solids[i]);
+            let pushDirection = this.kinematic.pushOut(solids[i]);
+
+            if (pushDirection == "-x" || pushDirection == "+x")
+            {
+                this.kinematic.velocity.x = 0;
+            }
+            else if (pushDirection == "-y" || pushDirection == "+y")
+            {
+                this.kinematic.velocity.y = 0;
+            }
         }
         for (let i = 0; i < mobiles.length; i++)
         {
-            this.collideSolid(mobiles[i].kinematic.collision);
+            if (mobiles[i] == this) { continue; }
+
+            let pushDirection = this.kinematic.pushOut(mobiles[i].kinematic.collision);
+
+            if (pushDirection == "-x" || pushDirection == "+x")
+            {
+                this.kinematic.velocity.x = 0;
+            }
+            else if (pushDirection == "-y" || pushDirection == "+y")
+            {
+                this.kinematic.velocity.y = 0;
+            }
         }
 
         this.floorCheck = new Rectangle(new Vector(this.kinematic.position.x, this.kinematic.position.y + this.height), this.width, 1);
@@ -185,6 +274,8 @@ class Player extends PIXI.Graphics
         }
         for (let i = 0; i < mobiles.length; i++)
         {
+            if (mobiles[i] == this) { continue; }
+
             if (this.floorCheck.intersects(mobiles[i].kinematic.collision))
             {
                 this.grounded = true;
@@ -228,14 +319,12 @@ class Player extends PIXI.Graphics
             if (this.kinematic.collision.center().x < other.center().x)
             {
                 this.kinematic.position.x -= overlap.width;
-                console.log("bonk1");
             }
 
             // Player is to the right
             else
             {
                 this.kinematic.position.x += overlap.width;
-                console.log("bonk2");
             }
         }
 
@@ -264,7 +353,7 @@ class Player extends PIXI.Graphics
         {
             //this.kinematic.applyForce(new Vector(0, -20000));
             this.kinematic.velocity.y = -400;
-            console.log("JUMP!");
+            //console.log("JUMP!");
         }
     }
 
