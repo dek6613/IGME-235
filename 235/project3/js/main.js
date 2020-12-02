@@ -16,8 +16,10 @@ let paused = true;
 
 let stage;
 
-let player;
-let testLevelScene, crate, crate2;
+let player, clickCircle;
+let crates = [];
+let gates = [];
+let testLevelScene;
 
 setup();
 
@@ -28,25 +30,31 @@ function setup()
     testLevelScene = new PIXI.Container();
     stage.addChild(testLevelScene);
 
-    // Create crate
-    crate = new Crate(new Vector(245, 30), cratePrefab.width, cratePrefab.height, cratePrefab.mass, cratePrefab.maxSpeed, cratePrefab.color);
-    crate.interactive = true;
-    crate.buttonMode = true;
-    crate.on("mousedown", e => crate.grabbed = true);
-    app.view.addEventListener("mouseup", e => crate.grabbed = false);
-    testLevelScene.addChild(crate);
+    // Create crates
+    crates.push(createCrate(new Vector(245, 30)));
+    crates.push(createCrate(new Vector(400, 580)));
 
-    crate2 = new Crate(new Vector(445, 30), cratePrefab.width, cratePrefab.height, cratePrefab.mass, cratePrefab.maxSpeed, cratePrefab.color);
-    crate2.interactive = true;
-    crate2.buttonMode = true;
-    crate2.on("mousedown", e => crate2.grabbed = true);
-    app.view.addEventListener("mouseup", e => crate2.grabbed = false);
-    testLevelScene.addChild(crate2);
+    for (let c of crates)
+    {
+        testLevelScene.addChild(c);
+    }
+
+    // Create player-only gates
+    gates.push(createPlayerGate(new Vector(450, 350), 100, 250));
+
+    for (let g of gates)
+    {
+        testLevelScene.addChild(g);
+    }
 
     // Create player
     player = new Player(new Vector(245, 0), playerPrefab.width, playerPrefab.height, playerPrefab.mass, playerPrefab.maxSpeed, playerPrefab.color);
     document.addEventListener("keydown", playerInputStart, true);
     document.addEventListener("keyup", playerInputEnd, true);
+
+    // Create radius indicator
+    clickCircle = new ClickRadius(player, 150, 0x0000FF);
+    testLevelScene.addChild(clickCircle);
     testLevelScene.addChild(player);
 
     app.ticker.add(gameLoop);
@@ -65,23 +73,56 @@ function gameLoop()
 
     let mobiles = [];
     
-    if (!crate.grabbed)
+    // Add non-grabbed crates to the list of mobile objects
+    for (let c of crates)
     {
-        mobiles.push(crate);
+        if (!clickCircle.intersects(c.kinematic.collision.center()))
+        {
+            c.grabbed = false;
+            c.interactive = false;
+        }
+        else
+        {
+            c.interactive = true;
+        }
+
+        if (!c.grabbed)
+        {
+            mobiles.push(c);
+        }
     }
-    if (!crate2.grabbed)
-    {
-        mobiles.push(crate2);
-    }
+
     mobiles.push(player);
 
-    crate.update(dt, [], mobiles, mousePosition);
-    crate2.update(dt, [], mobiles, mousePosition);
+    for (let c of crates)
+    {
+        c.update(dt, gates, mobiles, mousePosition);
+    }
     player.update(dt, [], mobiles);
+    clickCircle.update();
 
-    crate.draw();
-    crate2.draw();
+    for (let c of crates)
+    {
+        c.draw();
+    }
     player.draw();
+    clickCircle.draw();
+}
+
+function createCrate(position = new Vector())
+{
+    let c = new Crate(position, cratePrefab.width, cratePrefab.height, cratePrefab.mass, cratePrefab.maxSpeed, cratePrefab.color);
+    c.interactive = true;
+    c.buttonMode = true;
+    c.on("mousedown", e => c.grabbed = true);
+    app.view.addEventListener("mouseup", e => c.grabbed = false);
+    return c;
+}
+
+function createPlayerGate(position = new Vector(), width, height)
+{
+    let g = new PlayerGate(position, width, height, 0x00FFBF);
+    return g;
 }
 
 function playerInputStart(e)

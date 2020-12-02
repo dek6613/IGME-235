@@ -1,7 +1,7 @@
-const FLOOR = new Rectangle(new Vector(0, 600), 1000, 200);
-const LEFT_WALL = new Rectangle(new Vector(-200, 0), 200, 600);
-const RIGHT_WALL = new Rectangle(new Vector(1000, 0), 200, 600);
-const CEILING = new Rectangle(new Vector(0, -200), 1000, 200);
+const FLOOR = { collision: new Rectangle(new Vector(0, 600), 1000, 200) };
+const LEFT_WALL = { collision: new Rectangle(new Vector(-200, 0), 200, 600) };
+const RIGHT_WALL = { collision: new Rectangle(new Vector(1000, 0), 200, 600) };
+const CEILING = { collision: new Rectangle(new Vector(0, -200), 1000, 200) };
 
 class Crate extends PIXI.Graphics
 {
@@ -57,7 +57,7 @@ class Crate extends PIXI.Graphics
 
         for (let i = 0; i < solids.length; i++)
         {
-            let pushDirection = this.kinematic.pushOut(solids[i]);
+            let pushDirection = this.kinematic.pushOut(solids[i].collision);
 
             if (pushDirection == "-x" || pushDirection == "+x")
             {
@@ -94,7 +94,7 @@ class Crate extends PIXI.Graphics
 
         for (let i = 0; i < solids.length; i++)
         {
-            if (this.floorCheck.intersects(solids[i]))
+            if (this.floorCheck.intersects(solids[i].collision))
             {
                 this.grounded = true;
             }
@@ -234,7 +234,7 @@ class Player extends PIXI.Graphics
 
         for (let i = 0; i < solids.length; i++)
         {
-            let pushDirection = this.kinematic.pushOut(solids[i]);
+            let pushDirection = this.kinematic.pushOut(solids[i].collision);
 
             if (pushDirection == "-x" || pushDirection == "+x")
             {
@@ -267,7 +267,7 @@ class Player extends PIXI.Graphics
 
         for (let i = 0; i < solids.length; i++)
         {
-            if (this.floorCheck.intersects(solids[i]))
+            if (this.floorCheck.intersects(solids[i].collision))
             {
                 this.grounded = true;
             }
@@ -379,5 +379,62 @@ class Player extends PIXI.Graphics
         //this.kinematic.velocity = this.kinematic.velocity.clampMagnitude(this.kinematic.maxSpeed);
         this.kinematic.position = this.kinematic.position.add(this.kinematic.velocity.scale(dt));
         this.kinematic.collision.position = this.kinematic.position;
+    }
+}
+
+class ClickRadius extends PIXI.Graphics
+{
+    constructor(player, radius, color = 0xFF0000)
+    {
+        super();
+        this.beginFill(color);
+        this.drawCircle(0, 0, radius);
+        this.endFill();
+
+        this.player = player;
+
+        this.vectPos = player.kinematic.collision.center();
+        this.x = this.vectPos.x;
+        this.y = this.vectPos.y;
+
+        this.radius = radius;
+        this.alpha = 0.25;
+    }
+
+    update ()
+    {
+        this.vectPos = this.player.kinematic.collision.center();
+    }
+
+    draw ()
+    {
+        this.x = this.vectPos.x;
+        this.y = this.vectPos.y;
+    }
+
+    // Uses circle-point collision. Returns true if colliding with the point
+    intersects (other = new Vector())
+    {
+        let displacement = other.subtract(this.vectPos);
+
+        return this.radius >= displacement.magnitude();
+    }
+}
+
+class PlayerGate extends PIXI.Graphics
+{
+    constructor(position, width, height, color = 0x00FFBF)
+    {
+        super();
+        this.beginFill(color);
+        this.drawRect(0, 0, width, height);
+        this.endFill();
+        this.x = position.x;
+        this.y = position.y;
+        this.width = width;
+        this.height = height;
+        this.alpha = 0.25;
+
+        this.collision = new Rectangle(position, width, height);
     }
 }
