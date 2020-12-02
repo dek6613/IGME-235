@@ -115,7 +115,7 @@ class Rectangle
     }
 }
 
-const GRAVITY = 500;
+const GRAVITY = 1000;
 
 // Represents a physics object with a rectangular collision box
 class Kinematic

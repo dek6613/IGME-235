@@ -132,7 +132,7 @@ class Player extends PIXI.Graphics
         // Apply grounded friction if the player isn't inputting movement
         if (this.grounded && !(this.isMoveLeft || this.isMoveRight || this.isJump))
         {
-            this.kinematic.applyFriction(100);
+            this.kinematic.applyForce(new Vector(this.kinematic.velocity.x * -100, 0));
         }
 
         // Apply air friction if in the air
@@ -228,12 +228,14 @@ class Player extends PIXI.Graphics
             if (this.kinematic.collision.center().x < other.center().x)
             {
                 this.kinematic.position.x -= overlap.width;
+                console.log("bonk1");
             }
 
             // Player is to the right
             else
             {
                 this.kinematic.position.x += overlap.width;
+                console.log("bonk2");
             }
         }
 
@@ -260,8 +262,8 @@ class Player extends PIXI.Graphics
     {
         if (this.grounded)
         {
-            this.kinematic.applyForce(new Vector(0, -20000));
-            //this.kinematic.velocity.y = -300;
+            //this.kinematic.applyForce(new Vector(0, -20000));
+            this.kinematic.velocity.y = -400;
             console.log("JUMP!");
         }
     }
