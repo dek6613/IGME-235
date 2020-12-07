@@ -65,10 +65,20 @@ class Crate extends PIXI.Graphics
 
                 if (pushDirection == "-x" || pushDirection == "+x")
                 {
+                    if (Math.abs(this.kinematic.velocity.x) > 40)
+                    {
+                        bounceSound.play();
+                    }
+
                     this.kinematic.velocity.x *= -0.5;
                 }
                 else if (pushDirection == "-y" || pushDirection == "+y")
                 {
+                    if (Math.abs(this.kinematic.velocity.y) > 40)
+                    {
+                        bounceSound.play();
+                    }
+
                     this.kinematic.velocity.y *= -0.5;
                 }
             }
@@ -80,10 +90,20 @@ class Crate extends PIXI.Graphics
 
             if (pushDirection == "-x" || pushDirection == "+x")
             {
+                if (Math.abs(this.kinematic.velocity.x) > 40)
+                {
+                    bounceSound.play();
+                }
+
                 this.kinematic.velocity.x *= -0.5;
             }
             else if (pushDirection == "-y" || pushDirection == "+y")
             {
+                if (Math.abs(this.kinematic.velocity.y) > 40)
+                {
+                    bounceSound.play();
+                }
+
                 this.kinematic.velocity.y *= -0.5;
             }
         }
@@ -171,11 +191,6 @@ class Player extends PIXI.Graphics
     constructor(position = Vector(), width = 0, height = 0, mass = 1, maxSpeed = 1, color = 0x00FFBF)
     {
         super();
-        this.beginFill(color);
-        this.drawRect(0, 0, width, height);
-        this.endFill();
-        this.x = position.x;
-        this.y = position.y;
         this.width = width;
         this.height = height;
 
@@ -184,13 +199,45 @@ class Player extends PIXI.Graphics
         this.isMoveLeft = false;
         this.isMoveRight = false;
         this.isJump = false;
-        this.grounded = false;
+        this.grounded = true;
 
         this.riding = null;
 
         this.floorCheck = new Rectangle(new Vector(this.x, this.y + this.height), this.width, 1);
 
-        Object.seal(this);
+        this.prepareSprites();
+    }
+
+    prepareSprites()
+    {
+        this.idleAnim = new PIXI.AnimatedSprite(idleTextures);
+        this.walkAnim = new PIXI.AnimatedSprite(walkTextures);
+        this.jumpAnim = new PIXI.AnimatedSprite(jumpTextures);
+
+        this.addChild(this.idleAnim);
+        this.addChild(this.walkAnim);
+        this.addChild(this.jumpAnim);
+
+        
+        this.idleAnim.x = this.width / 2;
+        this.idleAnim.anchor.x = 0.5;
+        this.idleAnim.animationSpeed = 1/12;
+
+        this.walkAnim.x = this.width / 2;
+        this.walkAnim.anchor.x = 0.5;
+        this.walkAnim.animationSpeed = 1/12;
+
+        this.jumpAnim.x = this.width / 2;
+        this.jumpAnim.anchor.x = 0.5;
+        this.jumpAnim.animationSpeed = 1/12;
+
+        this.idleAnim.visible = true;
+        this.walkAnim.visible = false;
+        this.jumpAnim.visible = false;
+
+        this.idleAnim.play();
+        this.walkAnim.play();
+        this.jumpAnim.play();
     }
 
     update(dt = 1/60, solids = [], mobiles = [])
@@ -213,14 +260,39 @@ class Player extends PIXI.Graphics
         if (this.isMoveLeft)
         {
             this.moveLeft();
+
+            this.idleAnim.visible = false;
+            this.walkAnim.visible = true;
+            this.walkAnim.scale.x = -1;
+            this.jumpAnim.scale.x = -1;
+            this.jumpAnim.visible = false;
         }
         if (this.isMoveRight)
         {
             this.moveRight();
+
+            this.idleAnim.visible = false;
+            this.walkAnim.visible = true;
+            this.walkAnim.scale.x = 1;
+            this.jumpAnim.scale.x = 1;
+            this.jumpAnim.visible = false;
         }
         if (this.isJump)
         {
             this.jump();
+        }
+
+        if (!this.grounded)
+        {
+            this.idleAnim.visible = false;
+            this.walkAnim.visible = false;
+            this.jumpAnim.visible = true;
+        }
+        else if (!(this.isMoveLeft || this.isMoveRight))
+        {
+            this.idleAnim.visible = true;
+            this.walkAnim.visible = false;
+            this.jumpAnim.visible = false;
         }
 
         // Move
@@ -354,6 +426,8 @@ class Player extends PIXI.Graphics
             //this.kinematic.applyForce(new Vector(0, -20000));
             this.kinematic.velocity.y = -400;
             //console.log("JUMP!");
+
+            jumpSound.play();
         }
     }
 
@@ -465,7 +539,7 @@ class Level
         this.playerPrefab = playerPrefab;
         this.playerSpawn = playerSpawn;
         this.player = new Player(playerSpawn, playerPrefab.width, playerPrefab.height, playerPrefab.mass, playerPrefab.maxSpeed, playerPrefab.color);
-        
+
         this.clickCircle = new ClickRadius(this.player, clickRadius, 0x00CCFF);
 
         this.cratePrefab = cratePrefab;
@@ -516,8 +590,23 @@ function createCrate(position = new Vector(), cratePrefab)
     let c = new Crate(position, cratePrefab.width, cratePrefab.height, cratePrefab.mass, cratePrefab.maxSpeed, cratePrefab.color);
     c.interactive = true;
     c.buttonMode = true;
-    c.on("mousedown", e => c.grabbed = true);
-    app.view.addEventListener("mouseup", e => c.grabbed = false);
+    c.on("mousedown", e => 
+    {
+        if (currentLevel.clickCircle.intersects(e.target.kinematic.collision.center()))
+        {
+            c.grabbed = true;
+            grabSound.play();
+        }
+    });
+    app.view.addEventListener("mouseup", e => 
+    {
+        if (c.grabbed)
+        {
+            dropSound.play();
+        }
+
+        c.grabbed = false;
+    });
     return c;
 }
 
@@ -528,4 +617,16 @@ class LoadingZone
         this.collision = new Rectangle(position, width, height);
         this.nextLevel = nextLevel;
     }
+}
+
+function loadSpriteSheet(filePath, width, height, numFrames)
+{
+    let spriteSheet = PIXI.BaseTexture.from(filePath);
+    let textures = [];
+    for (let i = 0; i < numFrames; i++)
+    {
+        let frame = new PIXI.Texture(spriteSheet, new PIXI.Rectangle(i * width, 0, width, height));
+        textures.push(frame);
+    }
+    return textures;
 }

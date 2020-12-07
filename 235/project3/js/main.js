@@ -9,8 +9,23 @@ document.body.appendChild(app.view);
 const sceneWidth = app.view.width;
 const sceneHeight = app.view.height;
 
+// Load images
+app.loader.
+add([
+    "images/idleSpriteSheet.png",
+    "images/walkSpriteSheet.png",
+    "images/jumpSpriteSheet.png"
+]);
+app.loader.onProgress.add(e => { console.log(`progress=${e.progress}`) });
+app.loader.onComplete.add(setup);
+app.loader.load();
+
 const playerPrefab = { width: 20, height: 30, mass: 1, maxSpeed: 1, color: 0x00FFBF };
 const cratePrefab = { width: 40, height: 40, mass: 0.5, maxSpeed: 500, color: 0x4F4F4F };
+
+let idleTextures, walkTextures, jumpTextures;
+
+let jumpSound, bounceSound, grabSound, dropSound;
 
 let paused = true;
 
@@ -21,11 +36,36 @@ let currentLevel;
 
 let player, clickCircle;
 
-setup();
-
 function setup()
 {
     stage = app.stage;
+
+    // Break up spritesheets
+    idleTextures = loadSpriteSheet("images/idleSpriteSheet.png", 20, 30, 2);
+    walkTextures = loadSpriteSheet("images/walkSpriteSheet.png", 20, 30, 4);
+    jumpTextures = loadSpriteSheet("images/jumpSpriteSheet.png", 20, 30, 2);
+
+    // Load sounds
+    jumpSound = new Howl
+    ({
+        src: ["sounds/jumpSound.wav"],
+        volume: 0.25
+    });
+    bounceSound = new Howl
+    ({
+        src: ["sounds/bounceSound.wav"],
+        volume: 0.75
+    });
+    grabSound = new Howl
+    ({
+        src: ["sounds/grabSound.wav"],
+        volume: 0.25
+    });
+    dropSound = new Howl
+    ({
+        src: ["sounds/dropSound.wav"],
+        volume: 0.25
+    });
 
     createLevels();
 
@@ -53,6 +93,11 @@ function gameLoop()
     {
         if (!currentLevel.clickCircle.intersects(c.kinematic.collision.center()))
         {
+            if (c.grabbed)
+            {
+                dropSound.play();
+            }
+
             c.grabbed = false;
             c.interactive = false;
         }
