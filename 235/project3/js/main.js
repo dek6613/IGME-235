@@ -12,9 +12,15 @@ const sceneHeight = app.view.height;
 // Load images
 app.loader.
 add([
+    "images/title.png",
     "images/idleSpriteSheet.png",
     "images/walkSpriteSheet.png",
-    "images/jumpSpriteSheet.png"
+    "images/jumpSpriteSheet.png",
+    "images/crate.png",
+    "images/WASD.png",
+    "images/arrows.png",
+    "images/mouse.png",
+    "images/exit.png"
 ]);
 app.loader.onProgress.add(e => { console.log(`progress=${e.progress}`) });
 app.loader.onComplete.add(setup);
@@ -22,6 +28,8 @@ app.loader.load();
 
 const playerPrefab = { width: 20, height: 30, mass: 1, maxSpeed: 1, color: 0x00FFBF };
 const cratePrefab = { width: 40, height: 40, mass: 0.5, maxSpeed: 500, color: 0x4F4F4F };
+
+let titleScene;
 
 let idleTextures, walkTextures, jumpTextures;
 
@@ -73,8 +81,6 @@ function setup()
     document.addEventListener("keyup", playerInputEnd, true);
 
     app.ticker.add(gameLoop);
-
-    paused = false;
 }
 
 function gameLoop()
@@ -156,6 +162,13 @@ function startNextLevel()
     paused = false;
 }
 
+function startGame()
+{
+    titleScene.visible = false;
+    currentLevel.scene.visible = true;
+    paused = false;
+}
+
 function createLevels()
 {
     paused = true;
@@ -166,15 +179,50 @@ function createLevels()
     let playerSpawn;
     let loadingZone;
 
+    // ------ TITLE SCREEN ------
+    titleScene = new PIXI.Container();
+    stage.addChild(titleScene);
+
+    let titleImage = new PIXI.Sprite(app.loader.resources["images/title.png"].texture);
+    titleScene.addChild(titleImage);
+
+    let startButton = new PIXI.Text("Enter the Lab");
+    startButton.style = new PIXI.TextStyle
+    ({
+        fill: 0x249b91,
+        fontSize: 60,
+        fontFamily: "Sans-Serif"
+    });
+    startButton.x = 325;
+    startButton.y = sceneHeight - 100;
+    startButton.interactive = true;
+    startButton.buttonMode = true;
+    startButton.on("pointerup", startGame);
+    startButton.on("pointerover", e => e.target.alpha = 0.7);
+    startButton.on("pointerout", e => e.currentTarget.alpha = 1.0);
+    titleScene.addChild(startButton);
+
     // ------ LEVEL 0 - CORRIDOR ------
     let corridorScene = new PIXI.Container();
     stage.addChild(corridorScene);
+    corridorScene.visible = false;
 
     walls = [];
     gates = [];
     crateSpawns = [];
     playerSpawn = new Vector();
     loadingZone = null;
+
+    // Create tutorial images
+    let wasdLabel = new PIXI.Sprite(app.loader.resources["images/WASD.png"].texture);
+    wasdLabel.x = 200;
+    wasdLabel.y = 200;
+    corridorScene.addChild(wasdLabel);
+
+    let arrowsLabel = new PIXI.Sprite(app.loader.resources["images/arrows.png"].texture);
+    arrowsLabel.x = 470;
+    arrowsLabel.y = 200;
+    corridorScene.addChild(arrowsLabel);
 
     // Create walls
     walls = 
@@ -210,6 +258,12 @@ function createLevels()
     crateSpawns = [];
     playerSpawn = new Vector();
     loadingZone = null;
+
+    // Create tutorial image
+    let mouseLabel = new PIXI.Sprite(app.loader.resources["images/mouse.png"].texture);
+    mouseLabel.x = 420;
+    mouseLabel.y = 200;
+    introBoxScene.addChild(mouseLabel);
 
     // Create walls
     walls = 
@@ -384,16 +438,10 @@ function createLevels()
     playerSpawn = new Vector();
     loadingZone = null;
 
-    // Create temporary exit text
-    let exitLabel = new PIXI.Text("EXIT >>");
-    exitLabel.style = new PIXI.TextStyle
-    ({
-        fill: 0xFF0000,
-        fontSize: 25,
-        fontFamily: "Verdana"
-    });
-    exitLabel.x = 860;
-    exitLabel.y = 160;
+    // Create exit sign
+    let exitLabel = new PIXI.Sprite(app.loader.resources["images/exit.png"].texture);
+    exitLabel.x = 800;
+    exitLabel.y = 100;
     flingFinaleScene.addChild(exitLabel);
 
     // Create walls
@@ -445,7 +493,7 @@ function createLevels()
 
     currentLevel = levels[0];
 
-    paused = false;
+    titleScene.visible = true;
 }
 
 function createWall(position = new Vector(), width, height)

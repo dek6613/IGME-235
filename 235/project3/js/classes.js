@@ -3,14 +3,11 @@ const LEFT_WALL = { collision: new Rectangle(new Vector(-200, 0), 200, 600) };
 const RIGHT_WALL = { collision: new Rectangle(new Vector(1000, 0), 200, 600) };
 const CEILING = { collision: new Rectangle(new Vector(0, -200), 1000, 200) };
 
-class Crate extends PIXI.Graphics
+class Crate extends PIXI.Sprite
 {
     constructor(position = Vector(), width = 0, height = 0, mass = 1, maxSpeed = 1, color = 0xBFBFBF)
     {
-        super();
-        this.beginFill(color);
-        this.drawRect(0, 0, width, height);
-        this.endFill();
+        super(app.loader.resources["images/crate.png"].texture);
         this.x = position.x;
         this.y = position.y;
         this.width = width;
