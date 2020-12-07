@@ -20,7 +20,8 @@ add([
     "images/WASD.png",
     "images/arrows.png",
     "images/mouse.png",
-    "images/exit.png"
+    "images/exit.png",
+    "images/endcard.png"
 ]);
 app.loader.onProgress.add(e => { console.log(`progress=${e.progress}`) });
 app.loader.onComplete.add(setup);
@@ -29,7 +30,7 @@ app.loader.load();
 const playerPrefab = { width: 20, height: 30, mass: 1, maxSpeed: 1, color: 0x00FFBF };
 const cratePrefab = { width: 40, height: 40, mass: 0.5, maxSpeed: 500, color: 0x4F4F4F };
 
-let titleScene;
+let titleScene, endScene;
 
 let idleTextures, walkTextures, jumpTextures;
 
@@ -151,6 +152,13 @@ function startNextLevel()
     
     currentLevel = currentLevel.loadingZone.nextLevel;
 
+    if (currentLevel == "end")
+    {
+        endScene.visible = true;
+
+        return;
+    }
+
     currentLevel.restart();
 
     currentLevel.player.isMoveLeft = oldPlayer.isMoveLeft;
@@ -165,6 +173,8 @@ function startNextLevel()
 function startGame()
 {
     titleScene.visible = false;
+    currentLevel = levels[0];
+    currentLevel.restart();
     currentLevel.scene.visible = true;
     paused = false;
 }
@@ -191,9 +201,9 @@ function createLevels()
     ({
         fill: 0x249b91,
         fontSize: 60,
-        fontFamily: "Sans-Serif"
+        fontFamily: "Helvetica"
     });
-    startButton.x = 325;
+    startButton.x = 315;
     startButton.y = sceneHeight - 100;
     startButton.interactive = true;
     startButton.buttonMode = true;
@@ -201,6 +211,36 @@ function createLevels()
     startButton.on("pointerover", e => e.target.alpha = 0.7);
     startButton.on("pointerout", e => e.currentTarget.alpha = 1.0);
     titleScene.addChild(startButton);
+
+
+    // ------ END SCREEN ------
+    endScene = new PIXI.Container();
+    endScene.visible = false;
+    stage.addChild(endScene);
+
+    let endImage = new PIXI.Sprite(app.loader.resources["images/endcard.png"].texture);
+    endScene.addChild(endImage);
+
+    let endButton = new PIXI.Text("Back to menu");
+    endButton.style = new PIXI.TextStyle
+    ({
+        fill: 0x249b91,
+        fontSize: 60,
+        fontFamily: "Helvetica"
+    });
+    endButton.x = 50;
+    endButton.y = sceneHeight - 100;
+    endButton.interactive = true;
+    endButton.buttonMode = true;
+    endButton.on("pointerup", e => 
+    {
+        endScene.visible = false;
+        titleScene.visible = true;
+    });
+    endButton.on("pointerover", e => e.target.alpha = 0.7);
+    endButton.on("pointerout", e => e.currentTarget.alpha = 1.0);
+    endScene.addChild(endButton);
+
 
     // ------ LEVEL 0 - CORRIDOR ------
     let corridorScene = new PIXI.Container();
@@ -487,7 +527,7 @@ function createLevels()
         }
         else
         {
-            levels[i].loadingZone.nextLevel = levels[0];
+            levels[i].loadingZone.nextLevel = "end";
         }
     }
 
@@ -510,6 +550,8 @@ function createPlayerGate(position = new Vector(), width, height)
 
 function playerInputStart(e)
 {
+    if (paused){return;}
+
     switch (e.code)
     {
         case "KeyA":
@@ -533,6 +575,8 @@ function playerInputStart(e)
 
 function playerInputEnd(e)
 {
+    if (paused) {return;}
+
     switch (e.code)
     {
         case "KeyA":

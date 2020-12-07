@@ -147,6 +147,15 @@ class Crate extends PIXI.Sprite
 
     draw()
     {
+        if (this.grabbed)
+        {
+            this.tint = 0x0000FF;
+        }
+        else
+        {
+            this.tint = 0xFFFFFF;
+        }
+
         this.x = this.kinematic.position.x;
         this.y = this.kinematic.position.y;
     }
@@ -183,7 +192,7 @@ class Crate extends PIXI.Sprite
     }
 }
 
-class Player extends PIXI.Graphics
+class Player extends PIXI.Container
 {
     constructor(position = Vector(), width = 0, height = 0, mass = 1, maxSpeed = 1, color = 0x00FFBF)
     {
@@ -424,7 +433,10 @@ class Player extends PIXI.Graphics
             this.kinematic.velocity.y = -400;
             //console.log("JUMP!");
 
-            jumpSound.play();
+            if (!jumpSound.playing())
+            {
+                jumpSound.play();
+            }
         }
     }
 
