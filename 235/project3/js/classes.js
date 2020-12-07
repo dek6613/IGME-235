@@ -55,20 +55,6 @@ class Crate extends PIXI.Graphics
         solids.push(LEFT_WALL);
         solids.push(RIGHT_WALL);
 
-        for (let i = 0; i < solids.length; i++)
-        {
-            let pushDirection = this.kinematic.pushOut(solids[i].collision);
-
-            if (pushDirection == "-x" || pushDirection == "+x")
-            {
-                this.kinematic.velocity.x *= -0.5;
-            }
-            else if (pushDirection == "-y" || pushDirection == "+y")
-            {
-                this.kinematic.velocity.y *= -0.5;
-            }
-        }
-
         if (!this.grabbed)
         {
             for (let i = 0; i < mobiles.length; i++)
@@ -88,17 +74,23 @@ class Crate extends PIXI.Graphics
             }
         }
 
+        for (let i = 0; i < solids.length; i++)
+        {
+            let pushDirection = this.kinematic.pushOut(solids[i].collision);
+
+            if (pushDirection == "-x" || pushDirection == "+x")
+            {
+                this.kinematic.velocity.x *= -0.5;
+            }
+            else if (pushDirection == "-y" || pushDirection == "+y")
+            {
+                this.kinematic.velocity.y *= -0.5;
+            }
+        }
+
         this.floorCheck = new Rectangle(new Vector(this.kinematic.position.x, this.kinematic.position.y + this.height), this.width, 1);
         this.grounded = false;
         this.riding = null;
-
-        for (let i = 0; i < solids.length; i++)
-        {
-            if (this.floorCheck.intersects(solids[i].collision))
-            {
-                this.grounded = true;
-            }
-        }
 
         if (!this.grabbed)
         {
@@ -111,6 +103,14 @@ class Crate extends PIXI.Graphics
                     this.grounded = true;
                     this.riding = mobiles[i];
                 }
+            }
+        }
+
+        for (let i = 0; i < solids.length; i++)
+        {
+            if (this.floorCheck.intersects(solids[i].collision))
+            {
+                this.grounded = true;
             }
         }
 
@@ -232,19 +232,6 @@ class Player extends PIXI.Graphics
         solids.push(LEFT_WALL);
         solids.push(RIGHT_WALL);
 
-        for (let i = 0; i < solids.length; i++)
-        {
-            let pushDirection = this.kinematic.pushOut(solids[i].collision);
-
-            if (pushDirection == "-x" || pushDirection == "+x")
-            {
-                this.kinematic.velocity.x = 0;
-            }
-            else if (pushDirection == "-y" || pushDirection == "+y")
-            {
-                this.kinematic.velocity.y = 0;
-            }
-        }
         for (let i = 0; i < mobiles.length; i++)
         {
             if (mobiles[i] == this) { continue; }
@@ -260,18 +247,24 @@ class Player extends PIXI.Graphics
                 this.kinematic.velocity.y = 0;
             }
         }
+        for (let i = 0; i < solids.length; i++)
+        {
+            let pushDirection = this.kinematic.pushOut(solids[i].collision);
+
+            if (pushDirection == "-x" || pushDirection == "+x")
+            {
+                this.kinematic.velocity.x = 0;
+            }
+            else if (pushDirection == "-y" || pushDirection == "+y")
+            {
+                this.kinematic.velocity.y = 0;
+            }
+        }
 
         this.floorCheck = new Rectangle(new Vector(this.kinematic.position.x, this.kinematic.position.y + this.height), this.width, 1);
         this.grounded = false;
         this.riding = null;
 
-        for (let i = 0; i < solids.length; i++)
-        {
-            if (this.floorCheck.intersects(solids[i].collision))
-            {
-                this.grounded = true;
-            }
-        }
         for (let i = 0; i < mobiles.length; i++)
         {
             if (mobiles[i] == this) { continue; }
@@ -280,6 +273,13 @@ class Player extends PIXI.Graphics
             {
                 this.grounded = true;
                 this.riding = mobiles[i];
+            }
+        }
+        for (let i = 0; i < solids.length; i++)
+        {
+            if (this.floorCheck.intersects(solids[i].collision))
+            {
+                this.grounded = true;
             }
         }
         
@@ -453,5 +453,79 @@ class Wall extends PIXI.Graphics
         this.height = height;
 
         this.collision = new Rectangle(position, width, height);
+    }
+}
+
+class Level
+{
+    constructor(scene, playerPrefab, playerSpawn, clickRadius, cratePrefab, crateSpawns, walls, gates, loadingZone)
+    {
+        this.scene = scene;
+
+        this.playerPrefab = playerPrefab;
+        this.playerSpawn = playerSpawn;
+        this.player = new Player(playerSpawn, playerPrefab.width, playerPrefab.height, playerPrefab.mass, playerPrefab.maxSpeed, playerPrefab.color);
+        
+        this.clickCircle = new ClickRadius(this.player, clickRadius, 0x00CCFF);
+
+        this.cratePrefab = cratePrefab;
+        this.crateSpawns = crateSpawns;
+        this.crates = []
+        for (let i = 0; i < crateSpawns.length; i++)
+        {
+            this.crates[i] = createCrate(crateSpawns[i], cratePrefab);
+        }
+
+        this.walls = walls;
+        this.gates = gates;
+
+        this.loadingZone = loadingZone;
+
+        for (let g of this.gates)
+        {
+            this.scene.addChild(g);
+        }
+        for (let w of this.walls)
+        {
+            this.scene.addChild(w);
+        }
+        for (let c of this.crates)
+        {
+            this.scene.addChild(c);
+        }
+        this.scene.addChild(this.clickCircle);
+        this.scene.addChild(this.player);
+    }
+
+    restart()
+    {
+        for (let i = 0; i < this.crates.length; i++)
+        {
+            this.crates[i].kinematic.position = this.crateSpawns[i];
+            this.crates[i].kinematic.stop();
+            this.crates[i].grabbed = false;
+        }
+        
+        this.player.kinematic.position = this.playerSpawn;
+        this.player.kinematic.stop();
+    }
+}
+
+function createCrate(position = new Vector(), cratePrefab)
+{
+    let c = new Crate(position, cratePrefab.width, cratePrefab.height, cratePrefab.mass, cratePrefab.maxSpeed, cratePrefab.color);
+    c.interactive = true;
+    c.buttonMode = true;
+    c.on("mousedown", e => c.grabbed = true);
+    app.view.addEventListener("mouseup", e => c.grabbed = false);
+    return c;
+}
+
+class LoadingZone
+{
+    constructor(position, width, height, nextLevel = null)
+    {
+        this.collision = new Rectangle(position, width, height);
+        this.nextLevel = nextLevel;
     }
 }

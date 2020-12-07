@@ -9,17 +9,17 @@ document.body.appendChild(app.view);
 const sceneWidth = app.view.width;
 const sceneHeight = app.view.height;
 
-const playerPrefab = { width: 25, height: 25, mass: 1, maxSpeed: 1, color: 0x00FFBF };
+const playerPrefab = { width: 20, height: 30, mass: 1, maxSpeed: 1, color: 0x00FFBF };
 const cratePrefab = { width: 40, height: 40, mass: 0.5, maxSpeed: 500, color: 0x4F4F4F };
 
 let paused = true;
 
 let stage;
 
+let levels = [];
+let currentLevel;
+
 let player, clickCircle;
-let crates = [];
-let gates = [], walls = [];
-let testLevelScene;
 
 setup();
 
@@ -27,10 +27,10 @@ function setup()
 {
     stage = app.stage;
 
-    testLevelScene = new PIXI.Container();
-    stage.addChild(testLevelScene);
+    createLevels();
 
-    startLevel();
+    document.addEventListener("keydown", playerInputStart, true);
+    document.addEventListener("keyup", playerInputEnd, true);
 
     app.ticker.add(gameLoop);
 
@@ -49,9 +49,9 @@ function gameLoop()
     let mobiles = [];
     
     // Add non-grabbed crates to the list of mobile objects
-    for (let c of crates)
+    for (let c of currentLevel.crates)
     {
-        if (!clickCircle.intersects(c.kinematic.collision.center()))
+        if (!currentLevel.clickCircle.intersects(c.kinematic.collision.center()))
         {
             c.grabbed = false;
             c.interactive = false;
@@ -67,26 +67,277 @@ function gameLoop()
         }
     }
 
-    mobiles.push(player);
+    mobiles.push(currentLevel.player);
 
-    for (let c of crates)
+    for (let c of currentLevel.crates)
     {
-        c.update(dt, walls.concat(gates), mobiles, mousePosition);
+        c.update(dt, currentLevel.walls.concat(currentLevel.gates), mobiles, mousePosition);
     }
-    player.update(dt, walls, mobiles);
-    clickCircle.update();
+    currentLevel.player.update(dt, currentLevel.walls, mobiles);
+    currentLevel.clickCircle.update();
 
-    for (let c of crates)
+    for (let c of currentLevel.crates)
     {
         c.draw();
     }
-    player.draw();
-    clickCircle.draw();
+    currentLevel.player.draw();
+    currentLevel.clickCircle.draw();
+
+    // If the player is touching the loading zone, go to the next level
+    if (currentLevel.player.kinematic.collision.intersects(currentLevel.loadingZone.collision))
+    {
+        startNextLevel();
+    }
 }
 
-function startLevel()
+function startNextLevel()
 {
     paused = true;
+
+    currentLevel.scene.visible = false;
+
+    let oldPlayer = currentLevel.player;
+    
+    currentLevel = currentLevel.loadingZone.nextLevel;
+
+    currentLevel.restart();
+
+    currentLevel.player.isMoveLeft = oldPlayer.isMoveLeft;
+    currentLevel.player.isMoveRight = oldPlayer.isMoveRight;
+    currentLevel.player.isJump = oldPlayer.isJump;
+
+    currentLevel.scene.visible = true;
+
+    paused = false;
+}
+
+function createLevels()
+{
+    paused = true;
+    
+    let walls = [];
+    let gates = [];
+    let crateSpawns = [];
+    let playerSpawn;
+    let loadingZone;
+
+    // ------ LEVEL 0 - CORRIDOR ------
+    let corridorScene = new PIXI.Container();
+    stage.addChild(corridorScene);
+
+    walls = [];
+    gates = [];
+    crateSpawns = [];
+    playerSpawn = new Vector();
+    loadingZone = null;
+
+    // Create walls
+    walls = 
+    [
+        // Borders
+        createWall(new Vector(0, 0), 20, 600), // Left wall
+        createWall(new Vector(0, 0), 1000, 175), // Ceiling
+        createWall(new Vector(0, 425), 1000, 175), // Floor
+
+        // Corners
+        createWall(new Vector(20, 175), 100, 50), // Top left
+        createWall(new Vector(780, 175), 220, 50), // Top right
+        createWall(new Vector(20, 375), 100, 50), // Bottom left
+        createWall(new Vector(780, 375), 220, 50) // Bottom right
+    ];
+
+    // Set player spawn
+    playerSpawn = new Vector(50, 345);
+
+    // Create loading zone
+    loadingZone = new LoadingZone(new Vector(975, 175), 25, 200);
+
+    levels.push(new Level(corridorScene, playerPrefab, playerSpawn, 0, cratePrefab, crateSpawns, walls, gates, loadingZone));
+
+
+    // ------ LEVEL 1 - INTRO TO BOXES ------
+    let introBoxScene = new PIXI.Container();
+    stage.addChild(introBoxScene);
+    introBoxScene.visible = false;
+
+    walls = [];
+    gates = [];
+    crateSpawns = [];
+    playerSpawn = new Vector();
+    loadingZone = null;
+
+    // Create walls
+    walls = 
+    [
+        // Borders
+        createWall(new Vector(0, 0), 120, 225), // Left wall top
+        createWall(new Vector(0, 375), 120, 225), // Left wall bottom
+        createWall(new Vector(880, 0), 120, 135), // Right wall top
+        createWall(new Vector(880, 335), 120, 315), // Right wall bottom
+        createWall(new Vector(0, 0), 1000, 135), // Ceiling
+        createWall(new Vector(0, 425), 1000, 175) // Floor
+    ];
+
+    // Set crate spawn
+    crateSpawns = [new Vector(480, 140)];
+
+    // Set player spawn
+    playerSpawn = new Vector(50, 345);
+
+    // Create loading zone
+    loadingZone = new LoadingZone(new Vector(975, 135), 25, 200);
+
+    levels.push(new Level(introBoxScene, playerPrefab, playerSpawn, 150, cratePrefab, crateSpawns, walls, gates, loadingZone));
+
+
+    // ------ LEVEL 2 - BOX RETRIEVAL ------
+    let boxRetrievalScene = new PIXI.Container();
+    stage.addChild(boxRetrievalScene);
+    boxRetrievalScene.visible = false;
+
+    walls = [];
+    gates = [];
+    crateSpawns = [];
+    playerSpawn = new Vector();
+    loadingZone = null;
+
+    // Create walls
+    walls =
+    [
+        // Borders
+        createWall(new Vector(0, 0), 120, 135), // Left wall top
+        createWall(new Vector(0, 335), 120, 315), // Left wall bottom
+        createWall(new Vector(880, 0), 120, 95), // Right wall top
+        createWall(new Vector(880, 295), 120, 315), // Right wall bottom
+        createWall(new Vector(0, 0), 1000, 50), // Ceiling
+        createWall(new Vector(0, 425), 1000, 175), // Floor
+
+        // Platforms
+        createWall(new Vector(600, 185), 40, 20)
+    ];
+
+    // Set crate spawn
+    crateSpawns =
+    [
+        new Vector(480, 385),
+        new Vector(600, 145)
+    ];
+
+    // Set player spawn
+    playerSpawn = new Vector(50, 305);
+
+    // Create loading zone
+    loadingZone = new LoadingZone(new Vector(975, 135), 25, 200);
+
+    levels.push(new Level(boxRetrievalScene, playerPrefab, playerSpawn, 150, cratePrefab, crateSpawns, walls, gates, loadingZone));
+
+
+    // ------ LEVEL 3 - INTRO TO GATES ------
+    let gateIntroScene = new PIXI.Container();
+    stage.addChild(gateIntroScene);
+    gateIntroScene.visible = false;
+
+    walls = [];
+    gates = [];
+    crateSpawns = [];
+    playerSpawn = new Vector();
+    loadingZone = null;
+
+    // Create walls
+    walls =
+    [
+        // Borders
+        createWall(new Vector(0, 0), 120, 350), // Left wall top
+        createWall(new Vector(0, 450), 120, 150), // Left wall bottom
+        createWall(new Vector(880, 0), 120, 160), // Right wall top
+        createWall(new Vector(880, 360), 120, 315), // Right wall bottom
+        createWall(new Vector(0, 0), 1000, 50), // Ceiling
+        createWall(new Vector(0, 550), 1000, 50), // Floor
+
+        // Platforms
+        createWall(new Vector(0, 500), 500, 50), // Slab bottom
+        createWall(new Vector(0, 450), 400, 50) // Slab top
+    ];
+
+    // Create gates
+    gates = 
+    [
+        createPlayerGate(new Vector(120, 350), 200, 100), // Holding up crates at spawn
+        createPlayerGate(new Vector(400, 450), 480, 100) // At the end to let the player use crate as floating platform
+    ];
+
+    // Set crate spawns
+    crateSpawns =
+    [
+        new Vector(150, 310),
+        new Vector(250, 310)
+    ];
+
+    // Set player spawn
+    playerSpawn = new Vector(50, 420);
+
+    // Create loading zone
+    loadingZone = new LoadingZone(new Vector(975, 160), 25, 200);
+
+    levels.push(new Level(gateIntroScene, playerPrefab, playerSpawn, 150, cratePrefab, crateSpawns, walls, gates, loadingZone));
+
+
+    // ------ LEVEL 4 - FLING THING ------
+    let flingThingScene = new PIXI.Container();
+    stage.addChild(flingThingScene);
+    flingThingScene.visible = false;
+
+    walls = [];
+    gates = [];
+    crateSpawns = [];
+    playerSpawn = new Vector();
+    loadingZone = null;
+
+    // Create walls
+    walls = 
+    [
+        // Borders
+        createWall(new Vector(0, 0), 120, 160), // Left wall top
+        createWall(new Vector(0, 360), 120, 240), // Left wall bottom
+        createWall(new Vector(880, 0), 120, 260), // Right wall top
+        createWall(new Vector(880, 460), 120, 140), // Right wall bottom
+        createWall(new Vector(0, 0), 1000, 50), // Ceiling
+        createWall(new Vector(0, 550), 1000, 50), // Floor
+
+        // Platforms
+        createWall(new Vector(425, 370), 150, 150), // Center pillar
+        createWall(new Vector(575, 500), 50, 20) // Center pillar right overhang
+    ];
+
+    // Create gates
+    gates = 
+    [
+        createPlayerGate(new Vector(425, 370), 150, 180),
+        createPlayerGate(new Vector(575, 520), 50, 30)
+    ];
+
+    // Set crate spawn
+    crateSpawns = [new Vector(250, 510)];
+
+    // Set player spawn
+    playerSpawn = new Vector(50, 330);
+
+    // Create loading zone
+    loadingZone = new LoadingZone(new Vector(975, 260), 25, 200);
+
+    levels.push(new Level(flingThingScene, playerPrefab, playerSpawn, 150, cratePrefab, crateSpawns, walls, gates, loadingZone));
+
+
+    // ------ LEVEL 5 - FLING FINALE ------
+    let flingFinaleScene = new PIXI.Container();
+    stage.addChild(flingFinaleScene);
+    flingFinaleScene.visible = false;
+
+    walls = [];
+    gates = [];
+    crateSpawns = [];
+    playerSpawn = new Vector();
+    loadingZone = null;
 
     // Create temporary exit text
     let exitLabel = new PIXI.Text("EXIT >>");
@@ -98,89 +349,64 @@ function startLevel()
     });
     exitLabel.x = 860;
     exitLabel.y = 160;
-    testLevelScene.addChild(exitLabel);
+    flingFinaleScene.addChild(exitLabel);
 
     // Create walls
+    walls = 
+    [
+        // Borders
+        createWall(new Vector(0, 0), 20, 600),
+        createWall(new Vector(0, 0), 1000, 100),
+        createWall(new Vector(0, 580), 1000, 20),
 
-    // Border
-    walls.push(createWall(new Vector(0, 0), 20, 600));
-    walls.push(createWall(new Vector(0, 0), 1000, 100));
-    walls.push(createWall(new Vector(980, 0), 20, 600));
-    walls.push(createWall(new Vector(0, 580), 1000, 20));
+        // Platforms
+        createWall(new Vector(20, 310), 100, 20),
+        createWall(new Vector(750, 400), 250, 200),
+        createWall(new Vector(850, 250), 150, 150)
+    ];
 
-    // Platforms
-    walls.push(createWall(new Vector(20, 310), 100, 20));
-    walls.push(createWall(new Vector(750, 400), 250, 200));
-    walls.push(createWall(new Vector(850, 250), 150, 150));
-
-    for (let w of walls)
-    {
-        testLevelScene.addChild(w);
-    }
-
-    // Create crates
-    crates.push(createCrate(new Vector(245, 300)));
-    crates.push(createCrate(new Vector(50, 270)));
-    crates.push(createCrate(new Vector(650, 560)));
-    crates.push(createCrate(new Vector(788, 360)));
-
-    for (let c of crates)
-    {
-        testLevelScene.addChild(c);
-    }
+    // Create crate spawn points
+    crateSpawns = [
+        new Vector(245, 300),
+        new Vector(50, 270),
+        new Vector(650, 560),
+        new Vector(788, 360)
+    ];
 
     // Create player-only gates
-    gates.push(createPlayerGate(new Vector(400, 320), 100, 260));
+    gates = [createPlayerGate(new Vector(400, 320), 100, 260)];
 
-    for (let g of gates)
-    {
-        testLevelScene.addChild(g);
-    }
+    // Create loading zone
+    loadingZone = new LoadingZone(new Vector(975, 100), 25, 150);
 
     // Create player
-    player = new Player(new Vector(30, 555), playerPrefab.width, playerPrefab.height, playerPrefab.mass, playerPrefab.maxSpeed, playerPrefab.color);
-    document.addEventListener("keydown", playerInputStart, true);
-    document.addEventListener("keyup", playerInputEnd, true);
+    playerSpawn = new Vector(30, 550);
 
-    // Create radius indicator
-    clickCircle = new ClickRadius(player, 150, 0x00CCFF);
-    testLevelScene.addChild(clickCircle);
-    testLevelScene.addChild(player);
+    levels.push(new Level(flingFinaleScene, playerPrefab, playerSpawn, 150, cratePrefab, crateSpawns, walls, gates, loadingZone));
 
-    paused = false;
-}
 
-function restartLevel()
-{
-    crates[0].kinematic.position = new Vector(245, 300);
-    crates[1].kinematic.position = new Vector(50, 270);
-    crates[2].kinematic.position = new Vector(650, 560);
-    crates[3].kinematic.position = new Vector(788, 360);
-    
-    player.kinematic.position = new Vector(30, 555);
-
-    for (let c of crates)
+    // ------ CLEANUP ------
+    for (let i = 0; i < levels.length; i++)
     {
-        c.kinematic.stop();
+        if (i < levels.length - 1)
+        {
+            levels[i].loadingZone.nextLevel = levels[i+1];
+        }
+        else
+        {
+            levels[i].loadingZone.nextLevel = levels[0];
+        }
     }
 
-    player.kinematic.stop();
+    currentLevel = levels[0];
+
+    paused = false;
 }
 
 function createWall(position = new Vector(), width, height)
 {
     let w = new Wall(position, width, height, 0xCFCFCF);
     return w;
-}
-
-function createCrate(position = new Vector())
-{
-    let c = new Crate(position, cratePrefab.width, cratePrefab.height, cratePrefab.mass, cratePrefab.maxSpeed, cratePrefab.color);
-    c.interactive = true;
-    c.buttonMode = true;
-    c.on("mousedown", e => c.grabbed = true);
-    app.view.addEventListener("mouseup", e => c.grabbed = false);
-    return c;
 }
 
 function createPlayerGate(position = new Vector(), width, height)
@@ -195,16 +421,19 @@ function playerInputStart(e)
     {
         case "KeyA":
         case "ArrowLeft":
-            player.isMoveLeft = true;
+            currentLevel.player.isMoveLeft = true;
+            e.preventDefault();
             break;
         case "KeyD":
         case "ArrowRight":
-            player.isMoveRight = true;
+            currentLevel.player.isMoveRight = true;
+            e.preventDefault();
             break;
         case "KeyW":
         case "ArrowUp":
         case "Space":
-            player.isJump = true;
+            currentLevel.player.isJump = true;
+            e.preventDefault();
             break;
     }
 }
@@ -215,19 +444,23 @@ function playerInputEnd(e)
     {
         case "KeyA":
         case "ArrowLeft":
-            player.isMoveLeft = false;
+            currentLevel.player.isMoveLeft = false;
+            e.preventDefault();
             break;
         case "KeyD":
         case "ArrowRight":
-            player.isMoveRight = false;
+            currentLevel.player.isMoveRight = false;
+            e.preventDefault();
             break;
         case "KeyW":
         case "ArrowUp":
         case "Space":
-            player.isJump = false;
+            currentLevel.player.isJump = false;
+            e.preventDefault();
             break;
         case "KeyR":
-            restartLevel();
+            e.preventDefault();
+            currentLevel.restart();
             break;
     }
 }
