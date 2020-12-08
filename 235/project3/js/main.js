@@ -201,7 +201,7 @@ function createLevels()
     ({
         fill: 0x249b91,
         fontSize: 60,
-        fontFamily: "Helvetica"
+        fontFamily: "sans-serif"
     });
     startButton.x = 315;
     startButton.y = sceneHeight - 100;
@@ -226,7 +226,7 @@ function createLevels()
     ({
         fill: 0x249b91,
         fontSize: 60,
-        fontFamily: "Helvetica"
+        fontFamily: "sans-serif"
     });
     endButton.x = 50;
     endButton.y = sceneHeight - 100;
@@ -488,19 +488,19 @@ function createLevels()
     walls = 
     [
         // Borders
-        createWall(new Vector(0, 0), 20, 600),
-        createWall(new Vector(0, 0), 1000, 100),
-        createWall(new Vector(0, 580), 1000, 20),
+        createWall(new Vector(0, 0), 20, 400), // Left wall
+        createWall(new Vector(0, 0), 1000, 100), // Ceiling
+        createWall(new Vector(0, 580), 1000, 20), // Floor
 
         // Platforms
-        createWall(new Vector(20, 310), 100, 20),
-        createWall(new Vector(750, 400), 250, 200),
-        createWall(new Vector(850, 250), 150, 150)
+        createWall(new Vector(20, 310), 100, 20), // Left ledge
+        createWall(new Vector(750, 400), 250, 200), // Right lower stair
+        createWall(new Vector(850, 250), 150, 150) // Right upper stair
     ];
 
     // Create crate spawn points
     crateSpawns = [
-        new Vector(245, 300),
+        new Vector(245, 540),
         new Vector(50, 270),
         new Vector(650, 560),
         new Vector(788, 360)

@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Graviturgy</title>
+
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1 style="margin-top: 0.5rem">Graviturgy</h1>
-
-    <p><strong>Controls:</strong> WASD or Arrow Keys to move, Left-Click and drag to lift objects within your range. If you get stuck, press R to restart.</p>
+    <div id="topBar">
+        <h1>Graviturgy</h1>
+        <h2><a href="graviturgy.html">Game</a></h2>
+        <h2><a href="about.html">Docs</a></h2>
+    </div>
 
     <!-- External libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.3.3/pixi.min.js"></script>
@@ -18,5 +22,7 @@
     <script src="js/physics.js"></script>
     <script src="js/classes.js"></script>
     <script src="js/main.js"></script>
+
+    <p id="controls"><strong>Controls:</strong> WASD or Arrow Keys to move, Left-Click and drag to lift objects within your range. If you get stuck, press R to restart.</p>
 </body>
 </html>

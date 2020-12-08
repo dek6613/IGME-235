@@ -5,45 +5,15 @@
 	<meta charset="utf-8" />
 	<link href='https://fonts.googleapis.com/css?family=Allerta+Stencil' rel='stylesheet' type='text/css'>
 	<title>Project 1 Proposal</title>
-	<style type="text/css">
-	body{
-		margin-left:5%;
-		margin-right:5%;
-		background-color:#00008B;
-		font-family: verdana;
-	}
+
+	<link rel="stylesheet" href="css/style.css">
+
 	
-	#content{
-		background-color:white;
-		padding: 0 1em .5em 1em;
-	}
-	h1,h2,h3{
-		font-family: 'Allerta Stencil', sans-serif;
-		margin-bottom:0;
-		padding-bottom:0;
-	}
-	
-	h3{
-		color: #555;
-	}
-	
-	h2 + p, h3 + p{
-		margin-top:0.25em;
-	}
-	
-	li{
-		margin-bottom: 1em;
-	}
-	
-	section{
-		border-bottom: solid 1px gray;
-	}
-	</style>
 </head>
 <body>
 	<div id="content">
 		<div id="review">
-			<h1><em>Graviturgy</em></h1>
+			<h1>Graviturgy</h1>
 			
 			<section>
 				<h2>I. High Concept</h2>
@@ -68,40 +38,58 @@
 			<section>
 				<h2>V. Esthetics</h2>
 				<p>Graphics style - cartoonish, possibly stick figures if I'm pressed for time.</p>
-				<p>Sound - 8-bit and ambient, though the ambience would be rather quiet (faint buzzing of electricity or distant walking sounds). Most sounds would be used for player actions (walking, grabbing an object, etc). If I have time to add dialogue for the lab's pre-recorded security messages, those would be included as well for when the player enters a new room or the like.</p>
+				<p>Sound - 8-bit. Most sounds are used for player actions (jumping, grabbing an object, etc). If I had time to add dialogue for the lab's pre-recorded security messages, those would be included as well for when the player enters a new room or the like. May add these in the future for fun.</p>
 			</section>
 			
 			<section>
 				<h2>VI. Gameplay</h2>
 				<h3>Mechanics</h3>
 				<p>The core gameplay revolves around the player's ability to move, jump, manipulate objects (mostly crates). When the player clicks and holds on a movable object within a certain distance from them, the object follows the player's mouse (but still adheres to collision). While holding onto an object, the player is unable to walk or move outside of grabbing range. Also, the gravity gloves have a battery limit that goes down when an object is moved. When out of charge, the player becomes unable to grab any objects and drops any they were currently holding. Batteries are recharged upon entering a new room or when picking up a battery power-up. Lastly, there will be zones or gates where objects cannot be moved through and/or where the gravity gloves cannot be used.</p>
+				<p>NOTE: Having made the puzzle rooms for this project, I concluded that the battery mechanic was not needed to add depth to the puzzles, so I opted to not add it.</p>
 				
 				<h3>Control</h3>
 				<p>Keyboard & Mouse (keyboard to move, mouse to grab)</p>
 				
 				<h3>Teaching the game/New user experience aka "Onboarding"</h3>
-                <p>The very first room the player starts in will have indicators in the background (but clear enough to notice easily) that show the WASD keys, prompting the player to use those to move. Once they move to the right of their holding cell, there will be a wall that's too high to jump up, and a box in front of it. In the background will be another prompt directly above the box that shows the left mouse button pressed, prompting the player to click on the box. Additionally, movable objects will havea special outline to draw the player's attention to them, and when the cursor is over a movable object the object and cursor will change appearance slightly.</p>
+				<p>The very first room the player starts in will have indicators in the background (but clear enough to notice easily) that show the WASD keys, prompting the player to use those to move. Once they move to the right of their holding cell, there will be a wall that's too high to jump up, and a box in front of it. In the background will be another prompt directly above the box that shows the left mouse button pressed, prompting the player to click on the box. Additionally, movable objects will havea special outline to draw the player's attention to them, and when the cursor is over a movable object the object and cursor will change appearance slightly.</p>
+				<p>NOTE: The crates the player can move are shown moving (dropping from the ceiling) when the player first sees them, implying they are mobile. Instead of having a special outline or hover effect, the cursor switched to the mode it has when hovering over a button. Plus, when holding onto a crate, it glows blue.</p>
 			
 				<h3>Player learning</h3>
-                <p>As a puzzle game, the depth comes from figuring out how to use the Gravity Gloves to make a path to the exit of each room. Some combos include flinging objects to throw them further without using excess battery charge, swinging off of objects that are fixed to the ceiling, and moving objects underneath the player.</p>
+				<p>As a puzzle game, the depth comes from figuring out how to use the Gravity Gloves to make a path to the exit of each room. Some combos include flinging objects to throw them further without using excess battery charge, swinging off of objects that are fixed to the ceiling, and moving objects underneath the player.</p>
+				<p>NOTE: After designing the levels, the main depth and fun came from figuring out how to get height to reach objects and how to add speed to crates to fling them further, as well as interacting with the anti-crate walls.</p>
 			</section>
 			
 			
 			<section>
 				<h2>VII. Screenshots</h2>
-                <img src="images/sketch1.png" alt="" wdith=100%/>
-                <img src="images/sketch2.png" alt="" width=100%/>
+                <img src="images/sketch1.png" alt=""/>
+                <img src="images/sketch2.png" alt=""/>
 			</section>
 			
 			<section>
 				<h2>VIII. Other</h2>
-				<p>This will use PIXIjs to render images. The game takes inspiration from momentum-based puzzle games such as Portal and physics sandboxes such as GMod (in particular, the physics gun).</p>
+				<p>This will use PIXIjs to render images and Howler to play sounds. The game takes inspiration from momentum-based puzzle games such as Portal and physics sandboxes such as GMod (in particular, the physics gun).</p>
 			</section>
 			
 			<section>
 				<h2>IX. About the developer</h2>
-                <p>Your name/major/minor/year your, skill set and interests (ex. programming, game physics, graphic design, Maya, Photoshop, Illustrator, music, game sound, ...).</p>
                 <p>I'm Daniel Kowalski, a 2nd year Game Design & Development major at RIT. I'm skilled in general programming, game design, graphic design, and photoshop. Generally I like to use object oriented languages such as C# and full game engines, particularly Unity. I'm a huge fan of strategy, platformer, puzzle, and tabletop games.</p>
+			</section>
+
+			<section>
+				<h2>X. Development Process</h2>
+				<p>
+					Out the gate, I focused on getting the physics system working as soon as possible. The earliest playable version of the game was just an empty room with a grey box that you could fling around. After making sure the physics system felt as good as possible, I started working on the player and their controls. Once again, after making sure those felt tight, I went on to start designing levels.
+				</p>
+				<p>
+					The level design was probably the most interesting and challenging part of the design process. Essentially, my goal was to make levels that were both interesting enough given the mechanics I designed, but not too complicated or difficult to solve. Knowing this, I started sketching out various puzzle rooms with different methods of solutions. For example, some puzzles are about trying to get a box from one side of the map to another (usually via flinging), while another is about riding a box across a gap you can't walk on.
+				</p>
+				<p>
+					The other aspect of level design I had to consider was onboarding. In fact, most of the levels I implimented into the final game are effectively tutorials to get the player used to the mechanics and their toolkit for puzzle solving. If I update this game in the future, I will likely add in more complicated puzzles such as those near the end of the game, but for each new type of challenge a puzzle provides (such as flinging or retrieving boxes), I would have a level some time before it that introduces that mechanic in a simpler scenario.
+				</p>
+				<p>
+					Overall, I'm proud of how Graviturgy turned out. I often found myself messing around in the game when testing and getting distracted from what I was working on. In the future, I might go back to add more levels, new types of mechanics (moving platforms, crate-only walls, etc), and a voice over to make the place feel less empty.
+				</p>
 			</section>
 		</div>
 	</div>
