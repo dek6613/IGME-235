@@ -31,7 +31,7 @@
     <main>
         <div id="about">
             <h2>About me</h2>
-            <img src="media/avatar.png" alt="" class="shadow"/>
+            <img src="media/photo.jpg" alt="" class="shadow"/>
 
             <!-- This div keeps the paragraphs together in one green box -->
             <div class="aboutText shadow">
@@ -51,41 +51,105 @@
             <!-- All projects go inside this gallery div and should follow the template used by the 3 seen here -->
             <div class="gallery">
                 <div class="project shadow">
-                    <h3>Placeholder Game</h3>
-                    <img src="https://via.placeholder.com/350x190?text=Project+Thumbnail" alt="" class="shadow"/>
+                    <h3>Graviturgy</h3>
+                    <img src="media/gravTitle.png" alt="" class="shadow"/>
 
                     <p>
-                        Description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project.
+                        Graviturgy is a puzzle platformer where you can use the force! I made it entirely in JavaScript utilizing PIXIjs and Howler. This is the first fully completed solo game project (even if I do plan on updating it in the future), and it's the project I'm most proud of. Give it a go!
+                        <br><br>
+                        <a href="#graviturgy">(Read more)</a>
+                        &emsp;
+                        <a href="https://people.rit.edu/dek6613/235/project3/graviturgy.html">(Try it out!)</a>
                     </p>
                 </div>
                 <div class="project shadow">
-                    <h3>Placeholder Game</h3>
-                    <img src="https://via.placeholder.com/350x190?text=Project+Thumbnail" alt="" class="shadow"/>
+                    <h3>Trial by Combat</h3>
+                    <img src="media/tbcMainMenu.png" alt="" class="shadow"/>
 
                     <p>
-                        Description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project.
+                        Trial by Combat is a local 2-player 2D tactics game developed using C# and Monogame. In this group project, I was the production manager, organizing meetings, timelines, and goals. In meetings and while working remotely, I often ended up acting as the group leader, coordinating our efforts and ensuring everyone had something productive to work on. Additionally, I created the map loading logic as well as the external tool used to draw, save, and edit the maps for the game.
+                        <br><br>
+                        <a href="#trial-by-combat">(Read more)</a>
                     </p>
                 </div>
                 <div class="project shadow">
-                    <h3>Placeholder Game</h3>
-                    <img src="https://via.placeholder.com/350x190?text=Project+Thumbnail" alt="" class="shadow"/>
+                    <h3>Pokémon Moveset Generator</h3>
+                    <img src="media/pmgSwinub.png" alt="" class="shadow"/>
 
                     <p>
-                        Description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project, description of the project, technologies and techniques used, my role in the project.
+                        The Pokémon Moveset Generator is a website that uses JavaScript and the PokéAPI to search for a pokémon and give it a random assortment of attacks and abilities. As someone who enjoys competitive Pokémon, I thought it would be fun to come up with a way to spice up my games every now and again, and having played around with my own website I can confirm it's a blast!
+                        <br><br>
+                        <a href="#pokemon-generator">(Read more)</a>
+                        &emsp;
+                        <a href="https://people.rit.edu/dek6613/235/pokemon-generator/">(Try it out!)</a>
                     </p>
                 </div>
             </div> <!-- End of gallery -->
         </div> <!-- End of gallery section -->
+
+        <div id="detailed-descriptions">
+            <div id="graviturgy" class="project full-width shadow">
+                <h2>Graviturgy</h2>
+
+                <img src="media/gravLevel.png" alt=""/>
+
+                <div class="detailed-text">
+                    <p>
+                        Graviturgy is a puzzle platformer where you can use the force! I made it entirely in JavaScript utilizing PIXIjs and Howler. This is the first fully completed solo game project (even if I do plan on updating it in the future), and it's the project I'm most proud of.
+                    </p>
+                    <p>
+                        The foremost goal of this project was to create a functional, believable, and fun physics system based on what I have learned over the years. Because of this, the very first thing I did was manually add in basic tools such as vectors, rectangles, collision detection, and kinematic objects with masses that can have forces applied to them. Making these physics (and the player controls) feel tight and smooth took a lot of testing, but after reconsidering various approaches I finally got the game to feel right. After that I focused on designing interesting puzzles that made the most out of what I found fun during physics testing: getting to high places, and throwing things across the room.
+                    </p>
+                    <p>
+                        <a href="https://people.rit.edu/dek6613/235/project3/graviturgy.html">(Try it out!)</a>
+                    </p>
+                </div> <!-- End of detailed text -->
+            </div> <!-- End of Graviturgy -->
+
+            <div id="trial-by-combat" class="project full-width shadow">
+                <h2>Trial by Combat</h2>
+
+                <img src="media/tbcCombat.png" alt=""/>
+
+                <div class="detailed-text">
+                    <p>
+                        Trial by Combat is a local 2-player 2D tactics game developed using C# and Monogame. In this group project, I was the production manager, organizing meetings, timelines, and goals. In meetings and while working remotely, I often ended up acting as the group leader, coordinating our efforts and ensuring everyone had something productive to work on. Additionally, I created the map loading logic as well as the external tool used to draw, save, and edit the maps for the game.
+                    </p>
+                    <p>
+                        Not only did I learn more about file I/O, but I also got great practice with making external tools to help streamline game development. Getting one program to export a file in a way that is readable and easy to disect in another program was challenging, but by making sure the structure of the output and the input was clear and defined I was able to make the whole process much easier than it could have been.
+                    </p>
+                </div> <!-- End of detailed text -->
+            </div> <!-- End of Trial by Combat -->
+
+            <div id="pokemon-generator" class="project full-width shadow">
+                <h2>Pokémon Moveset Generator</h2>
+
+                <img src="media/pmgEmolga.png" alt=""/>
+
+                <div class="detailed-text">
+                    <p>
+                        The Pokémon Moveset Generator is a website that uses JavaScript and the PokéAPI to search for a pokémon and give it a random assortment of attacks and abilities. As someone who enjoys competitive Pokémon, I thought it would be fun to come up with a way to spice up my games every now and again, and having played around with my own website I can confirm it's a blast!
+                    </p>
+                    <p>
+                        This project was my first deep-dive into utilizing a webAPI, so while working on it my primary goal was to learn how to smoothly pull data from a greater database and implement it cleanly into my own website. Since in the past I've usually been able to alter any given part of the code I'm working on, adjusting to be able to handle a predetermined, rigid source of data was difficult and added extra complexity to my JavaScript. For example, the PokéAPI has info on pokémon <em>species</em> and <em>individual</em> pokémon (such as various forms of the same species). Figuring out how to translate between these two data types was difficult, but by studying the API and how it is structured I manaaged to get my website to work how I wanted it to.
+                    </p>
+                    <p>
+                        <a href="https://people.rit.edu/dek6613/235/pokemon-generator/">(Try it out!)</a>
+                    </p>
+                </div> <!-- End of detailed text -->
+            </div> <!-- End of Pokémon Moveset Generator -->
+        </div> <!-- End of detailed descriptions -->
+
+        <div id="footer">
+            <h2>Contact me</h2>
+            
+            <address id="contact">
+                <a href="tel:7173213262" class="shadow">(717) 321-3262</a>
+                <a href="media/Kowalski, Daniel - Resume.pdf" class="shadow">Resume Link</a>
+                <a href="mailto:danielkow19@gmail.com" class="shadow">danielkow19@gmail.com</a>
+            </address>
+        </div> <!-- End of footer -->
     </main>
-    <footer>
-        <h2>Contact me</h2>
-        
-        <address id="contact">
-            <a href="tel:717-321-3262" class="shadow">(717) 321-3262</a>
-            <a href="#" class="shadow">Resume Link</a>
-            <a href="mailto:danielkow19@gmail.com" class="shadow">danielkow19@gmail.com</a>
-        </address>
-    </footer>
 
     <!-- Navbar sliding -->
     <script>
