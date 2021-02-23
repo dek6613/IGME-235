@@ -62,7 +62,7 @@ class Crate extends PIXI.Sprite
 
                 if (pushDirection == "-x" || pushDirection == "+x")
                 {
-                    if (Math.abs(this.kinematic.velocity.x) > 40)
+                    if (Math.abs(this.kinematic.velocity.x) * dt > 0.5)
                     {
                         bounceSound.play();
                     }
@@ -71,7 +71,7 @@ class Crate extends PIXI.Sprite
                 }
                 else if (pushDirection == "-y" || pushDirection == "+y")
                 {
-                    if (Math.abs(this.kinematic.velocity.y) > 40)
+                    if (Math.abs(this.kinematic.velocity.y) * dt > 0.5)
                     {
                         bounceSound.play();
                     }
